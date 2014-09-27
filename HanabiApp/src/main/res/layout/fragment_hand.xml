@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:layout_width="match_parent">
+
+    <LinearLayout
+        android:id="@+id/name_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_margin="1dp"
+            android:text="Curtis Kroetsch"
+            android:gravity="left"
+            android:textSize="10pt"
+            android:drawableRight="@android:drawable/star_off"
+            android:drawablePadding="10dp"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <include layout="@layout/my_card_view"
+                 android:layout_width="0dp"
+                 android:layout_margin="1dp"
+                 android:layout_height="match_parent"
+                 android:layout_weight="0.2"/>
+
+        <include layout="@layout/my_card_view"
+                 android:layout_width="0dp"
+                 android:layout_margin="1dp"
+                 android:layout_height="match_parent"
+                 android:layout_weight="0.2"/>
+
+        <include layout="@layout/my_card_view"
+                 android:layout_width="0dp"
+                 android:layout_margin="1dp"
+                 android:layout_height="match_parent"
+                 android:layout_weight="0.2"/>
+
+        <include layout="@layout/my_card_view"
+                 android:layout_width="0dp"
+                 android:layout_margin="1dp"
+                 android:layout_height="match_parent"
+                 android:layout_weight="0.2"/>
+
+        <include layout="@layout/my_card_view"
+                 android:layout_width="0dp"
+                 android:layout_margin="1dp"
+                 android:layout_height="match_parent"
+                 android:layout_weight="0.2"/>
+
+    </LinearLayout>
+</LinearLayout>

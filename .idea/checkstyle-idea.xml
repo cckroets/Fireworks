@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CheckStyle-IDEA">
+    <option name="configuration">
+      <map>
+        <entry key="active-configuration" value="HTTP_URL:https://raw.githubusercontent.com/twotoasters/AndroidStyleGuidelines/master/checkstyle.xml:git" />
+        <entry key="check-nonjava-files" value="false" />
+        <entry key="check-test-classes" value="false" />
+        <entry key="location-0" value="CLASSPATH:/sun_checks.xml:The default CheckStyle rules" />
+        <entry key="location-1" value="HTTP_URL:https://raw.githubusercontent.com/twotoasters/AndroidStyleGuidelines/master/checkstyle.xml:git" />
+        <entry key="property-1.proj.module.dir" value="" />
+        <entry key="suppress-errors" value="false" />
+        <entry key="thirdparty-classpath" value="" />
+      </map>
+    </option>
+  </component>
+</project>
+
