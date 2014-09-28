@@ -27,4 +27,11 @@ public final class Player {
         return mHand;
     }
 
+    public void setName(String mName) {
+        this.mName = mName;
+    }
+
+    public void setHand(List<Card> mHand) {
+        this.mHand = mHand;
+    }
 }

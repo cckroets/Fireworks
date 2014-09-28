@@ -5,11 +5,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.ckroetsch.hanabi.R;
 
@@ -18,12 +17,12 @@ import roboguice.fragment.RoboDialogFragment;
 /**
  * @author curtiskroetsch
  */
-public class CreateGameDialogFragment extends RoboDialogFragment {
+public class EnterGameDialogFragment extends RoboDialogFragment {
 
-    CreateDialogListener mListener;
+    EnterDialogListener mListener;
 
-    public static CreateGameDialogFragment createInstance(CreateDialogListener listener) {
-        CreateGameDialogFragment fragment = new CreateGameDialogFragment();
+    public static EnterGameDialogFragment createInstance(EnterDialogListener listener) {
+        EnterGameDialogFragment fragment = new EnterGameDialogFragment();
         fragment.mListener = listener;
         return fragment;
     }
@@ -32,16 +31,21 @@ public class CreateGameDialogFragment extends RoboDialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        final View view = inflater.inflate(R.layout.dialog_create, null);
-        final EditText nameView = (EditText) view.findViewById(R.id.create_name);
-        final CheckBox rainbowView = (CheckBox) view.findViewById(R.id.create_rainbow);
-        builder.setTitle("Create Game")
+        final View view = inflater.inflate(R.layout.dialog_enter, null);
+        final EditText nameView = (EditText) view.findViewById(R.id.enter_name);
+        final EditText idView = (EditText) view.findViewById(R.id.enter_id);
+        builder.setTitle("Enter Game")
                 .setView(view)
-                .setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Enter", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d("CREATE PRESSED", "mListener = " + mListener);
-                        mListener.onGameCreate(nameView.getText().toString(), rainbowView.isChecked());
+                        try {
+                            final int id = Integer.parseInt(idView.getText().toString());
+                            mListener.onGameEnter(id, nameView.getText().toString());
+                        } catch (NumberFormatException e) {
+                            dialogInterface.dismiss();
+                            Toast.makeText(getActivity(), "That Game ID is invalid", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -53,8 +57,9 @@ public class CreateGameDialogFragment extends RoboDialogFragment {
         return builder.create();
     }
 
-    public interface CreateDialogListener {
-        public void onGameCreate(String name, boolean rainbow);
-        public void onCancel();
+
+    public interface EnterDialogListener {
+        void onGameEnter(int id, String name);
+        void onCancel();
     }
 }

@@ -1,11 +1,12 @@
 package com.ckroetsch.hanabi.app;
 
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 
 import com.ckroetsch.hanabi.R;
+import com.ckroetsch.hanabi.model.Game;
+
 import roboguice.activity.RoboFragmentActivity;
 
 
@@ -19,6 +20,19 @@ public class MainActivity extends RoboFragmentActivity {
         setContentView(R.layout.activity_main);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, new StartFragment())
+                .commit();
+    }
+
+    public void openStartFragment() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, new StartFragment())
+                .commit();
+    }
+
+    public void openGameFragment(Game game) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Fragment gameFragment = GameFragment.createInstance(game);
+        transaction.replace(R.id.fragment_container, gameFragment)
                 .commit();
     }
 

@@ -24,4 +24,12 @@ public final class Card {
     public int getValue() {
         return mValue;
     }
+
+    public void setSuit(Suit mSuit) {
+        this.mSuit = mSuit;
+    }
+
+    public void setValue(int mValue) {
+        this.mValue = mValue;
+    }
 }

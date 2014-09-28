@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * @author curtiskroetsch
  */
-public final class Response {
+public final class GameResponse {
 
     @JsonProperty("success")
     boolean mSuccess;
@@ -13,7 +13,7 @@ public final class Response {
     @JsonProperty("game")
     Game mGame;
 
-    private Response() {
+    private GameResponse() {
 
     }
 

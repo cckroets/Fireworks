@@ -18,8 +18,11 @@ import com.ckroetsch.hanabi.model.Game;
 import com.ckroetsch.hanabi.model.Player;
 import com.ckroetsch.hanabi.model.Suit;
 import com.ckroetsch.hanabi.network.HanabiFrontEndAPI;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
+import java.io.IOException;
 import java.util.List;
 
 import retrofit.Callback;
@@ -31,9 +34,11 @@ import roboguice.inject.InjectView;
 /**
  * @author curtiskroetsch
  */
-public class MainFragment extends RoboFragment {
+public class GameFragment extends RoboFragment {
 
-    private static final String TAG = MainFragment.class.getName();
+    public static final String KEY_GAME = "game";
+
+    private static final String TAG = GameFragment.class.getName();
 
     @InjectView(R.id.players)
     ListView mPlayers;
@@ -41,47 +46,44 @@ public class MainFragment extends RoboFragment {
     @InjectView(R.id.board_container)
     LinearLayout mBoard;
 
-    @InjectView(R.id.board_blue)
-    View mBlue;
-
-    @InjectView(R.id.board_red)
-    View mRed;
-
-    @InjectView(R.id.board_yellow)
-    View mYellow;
-
-    @InjectView(R.id.board_green)
-    View mGreen;
-
-    @InjectView(R.id.board_white)
-    View mWhite;
-
-    @InjectView(R.id.board_rainbow)
-    View mRainbow;
-
     @Inject
     HanabiFrontEndAPI mHanabiAPI;
 
     Handler mHander = new Handler();
 
+    public static GameFragment createInstance(Game game) {
+        final GameFragment fragment = new GameFragment();
+        final ObjectMapper mapper = new ObjectMapper();
+        final Bundle args = new Bundle();
+        try {
+            String gameJSON = mapper.writeValueAsString(game);
+            Log.d(TAG, "gameJSON = " + gameJSON);
+            args.putString(KEY_GAME, gameJSON);
+            fragment.setArguments(args);
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Could not write JSON");
+        }
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHanabiAPI.getGame(4, new Callback<Game>() {
-            @Override
-            public void success(final Game game, Response response) {
-                mHander.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        bindGame(game);
-                    }
-                });
-            }
-            @Override
-            public void failure(RetrofitError error) {
-                Log.e(TAG, "error: " + error.getMessage());
-            }
-        });
+        final String gameJSON = getArguments().getString(KEY_GAME);
+        final ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            Log.d(TAG, "gameJSON = " + gameJSON);
+            final Game game = objectMapper.readValue(gameJSON, Game.class);
+            Log.d(TAG, "gameJSON = " + game);
+            mHander.post(new Runnable() {
+                @Override
+                public void run() {
+                    bindGame(game);
+                }
+            });
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     @Override
@@ -89,10 +91,12 @@ public class MainFragment extends RoboFragment {
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
-    private void bindCard(View cardView, int colorId, int value) {
+    private void bindCard(LayoutInflater inflater, Card card) {
+        final View cardView = inflater.inflate(R.layout.view_card, mBoard, false);
         final TextView cardValue = (TextView) cardView.findViewById(R.id.card_number);
-        cardValue.setText((value == 0) ? "X" : "" + value);
-        cardValue.setBackgroundResource(colorId);
+        cardValue.setText((card.getValue() == 0) ? "X" : "" + card.getValue());
+        cardValue.setBackgroundResource(card.getSuit().getColorId());
+        mBoard.addView(cardView);
     }
 
     @Override
@@ -102,19 +106,14 @@ public class MainFragment extends RoboFragment {
 
     private void bindGame(Game game) {
         bindBoard(game);
+        Log.d(TAG, "mPlayers: " + mPlayers);
         mPlayers.setAdapter(new PlayersAdapter(getActivity(), game.getPlayers()));
     }
 
     private void bindBoard(Game game) {
-        bindCard(mWhite, Suit.WHITE.getColorId(), game.getState().getWhite());
-        bindCard(mRed, Suit.RED.getColorId(), game.getState().getRed());
-        bindCard(mGreen, Suit.GREEN.getColorId(), game.getState().getGreen());
-        bindCard(mYellow, Suit.YELLOW.getColorId(), game.getState().getYellow());
-        bindCard(mBlue, Suit.BLUE.getColorId(), game.getState().getBlue());
-        if (game.isRainbow()) {
-            bindCard(mRainbow, Suit.RAINBOW.getColorId(), game.getState().getRainbow());
-        } else {
-            mRainbow.setVisibility(View.GONE);
+        final LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        for (Card card : game.getState()) {
+            bindCard(inflater, card);
         }
     }
 
