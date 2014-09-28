@@ -1,28 +1,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                tools:context=".MainActivity">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".MainActivity">
 
-    <ScrollView
-        android:layout_weight="1"
+    <ListView
+        android:id="@+id/players"
         android:layout_width="match_parent"
-        android:layout_height="0dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <include layout="@layout/fragment_hand" />
-            <include layout="@layout/fragment_hand" />
-            <include layout="@layout/fragment_hand" />
-            <include layout="@layout/fragment_hand" />
-
-        </LinearLayout>
-
-    </ScrollView>
 
     <View
         android:layout_width="match_parent"
@@ -37,48 +25,30 @@
         android:textSize="10pt"/>
 
     <LinearLayout
+        android:id="@+id/board_container"
         android:layout_width="match_parent"
         android:orientation="horizontal"
+        android:gravity="center_horizontal"
         android:layout_height="wrap_content">
 
-        <include layout="@layout/card_view"
-                 android:layout_height="wrap_content"
-                 android:layout_width="0dp"
-                 android:layout_weight="1"
-                 android:layout_margin="2dp"/>
-
-        <include layout="@layout/card_view"
-                 android:layout_height="wrap_content"
-                 android:layout_width="0dp"
-                 android:layout_weight="1"
-                 android:layout_margin="2dp"/>
-
-        <include layout="@layout/card_view"
-                 android:layout_height="wrap_content"
-                 android:layout_width="0dp"
-                 android:layout_weight="1"
-                 android:layout_margin="2dp"/>
-
-        <include layout="@layout/card_view"
-                 android:layout_height="wrap_content"
-                 android:layout_width="0dp"
-                 android:layout_weight="1"
-                 android:layout_margin="2dp"/>
-
-        <include layout="@layout/card_view"
-                 android:layout_height="wrap_content"
-                 android:layout_width="0dp"
-                 android:layout_weight="1"
-                 android:layout_margin="2dp"/>
-
-        <include layout="@layout/card_view"
-                 android:layout_height="wrap_content"
-                 android:layout_width="0dp"
-                 android:layout_weight="1"
-                 android:layout_margin="2dp"/>
-
-
-
+        <include
+            android:id="@+id/board_white"
+            layout="@layout/view_card"/>
+        <include
+            android:id="@+id/board_red"
+            layout="@layout/view_card"/>
+        <include
+            android:id="@+id/board_yellow"
+            layout="@layout/view_card"/>
+        <include
+            android:id="@+id/board_blue"
+            layout="@layout/view_card"/>
+        <include
+            android:id="@+id/board_green"
+            layout="@layout/view_card"/>
+        <include
+            android:id="@+id/board_rainbow"
+            layout="@layout/view_card"/>
 
     </LinearLayout>
 

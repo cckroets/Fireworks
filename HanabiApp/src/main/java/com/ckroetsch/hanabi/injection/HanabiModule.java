@@ -8,6 +8,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 
 import retrofit.RestAdapter;
+import retrofit.converter.JacksonConverter;
 
 /**
  * @author curtiskroetsch
@@ -30,7 +31,7 @@ public class HanabiModule extends AbstractModule {
     public HanabiFrontEndAPI getRetrofitImpl() {
         final RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(Constants.API_URL)
-                .setConverter(HanabiFrontEndAPI.JACKSON_CONVERTER)
+                .setConverter(new JacksonConverter())
                 .build();
         return restAdapter.create(HanabiFrontEndAPI.class);
     }

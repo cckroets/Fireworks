@@ -5,7 +5,7 @@ package com.ckroetsch.hanabi.network;
  */
 public final class Constants {
 
-    public static final String API_URL = "https://timpei.com/api";
+    public static final String API_URL = "http://192.168.2.6:5000/api";
 
     // Start game
     public static final String API_CREATE = "/create";

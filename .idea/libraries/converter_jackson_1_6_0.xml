@@ -4,6 +4,8 @@
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit/converter-jackson/1.6.0/799924ee9171ab3abb5b0f9d52f5fc39009ab9e9/converter-jackson-1.6.0.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit/converter-jackson/1.6.0/71e0412a567abd2859f795e4245286c57c87d99/converter-jackson-1.6.0-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

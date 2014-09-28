@@ -10,7 +10,7 @@ public final class CreateGameRequest {
     @JsonProperty("name")
     String mName;
 
-    @JsonProperty("rainbow")
+    @JsonProperty("RAINBOW")
     boolean mIsRainbow;
 
     public CreateGameRequest(String name, boolean rainbow) {

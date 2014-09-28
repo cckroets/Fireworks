@@ -3,13 +3,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:clickable="true"
-              android:background="@drawable/card"
-              android:padding="2dp"
-              android:layout_width="64dp"
+              android:layout_margin="4dp"
+              android:layout_width="48dp"
               android:layout_height="64dp">
     
     <TextView
         android:id="@+id/card_number"
+        android:background="@color/pastel_green"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"

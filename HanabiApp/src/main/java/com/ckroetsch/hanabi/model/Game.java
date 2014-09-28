@@ -1,5 +1,6 @@
 package com.ckroetsch.hanabi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -7,7 +8,11 @@ import java.util.List;
 /**
  * @author curtiskroetsch
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class Game {
+
+    @JsonProperty("id")
+    int mId;
 
     @JsonProperty("numCardsRemaining")
     int mCardsRemaining;
@@ -38,6 +43,9 @@ public final class Game {
 
     @JsonProperty("hasEnded")
     boolean mHasEnded;
+
+    @JsonProperty("hasStarted")
+    boolean mHasStarted;
 
     private Game() {
 
@@ -83,4 +91,7 @@ public final class Game {
         return mHasEnded;
     }
 
+    public boolean hasStarted() {
+        return mHasStarted;
+    }
 }
