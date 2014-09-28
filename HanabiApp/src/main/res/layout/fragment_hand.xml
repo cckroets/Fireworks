@@ -27,39 +27,37 @@
 
 
     <LinearLayout
+        android:id="@+id/card_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <include layout="@layout/my_card_view"
+        <include layout="@layout/card_view"
                  android:layout_width="0dp"
-                 android:layout_margin="1dp"
                  android:layout_height="match_parent"
                  android:layout_weight="0.2"/>
 
-        <include layout="@layout/my_card_view"
+        <include layout="@layout/card_view"
                  android:layout_width="0dp"
-                 android:layout_margin="1dp"
                  android:layout_height="match_parent"
                  android:layout_weight="0.2"/>
 
-        <include layout="@layout/my_card_view"
+        <include layout="@layout/card_view"
                  android:layout_width="0dp"
-                 android:layout_margin="1dp"
                  android:layout_height="match_parent"
                  android:layout_weight="0.2"/>
 
-        <include layout="@layout/my_card_view"
+        <include layout="@layout/card_view"
                  android:layout_width="0dp"
-                 android:layout_margin="1dp"
                  android:layout_height="match_parent"
                  android:layout_weight="0.2"/>
 
-        <include layout="@layout/my_card_view"
+        <include layout="@layout/card_view"
                  android:layout_width="0dp"
-                 android:layout_margin="1dp"
                  android:layout_height="match_parent"
                  android:layout_weight="0.2"/>
+
+
 
     </LinearLayout>
 </LinearLayout>

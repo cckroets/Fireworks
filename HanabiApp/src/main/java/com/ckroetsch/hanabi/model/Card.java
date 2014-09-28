@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public final class Card {
 
     @JsonProperty("suit")
-    String mSuit;
+    Suit mSuit;
 
     @JsonProperty("number")
     int mValue;
@@ -17,7 +17,7 @@ public final class Card {
 
     }
 
-    public String getSuit() {
+    public Suit getSuit() {
         return mSuit;
     }
 

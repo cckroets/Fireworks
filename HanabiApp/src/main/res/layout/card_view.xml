@@ -9,7 +9,6 @@
               android:layout_height="64dp">
     
     <TextView
-        android:background="@color/pastel_red"
         android:id="@+id/card_number"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

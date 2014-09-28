@@ -33,6 +33,12 @@ public final class Game {
     @JsonProperty("discarded")
     List<Card> mDiscarded;
 
+    @JsonProperty("currentPlayer")
+    String mCurrentPlayer;
+
+    @JsonProperty("hasEnded")
+    boolean mHasEnded;
+
     private Game() {
 
     }
@@ -67,6 +73,14 @@ public final class Game {
 
     public List<Card> getDiscards() {
         return mDiscarded;
+    }
+
+    public String getCurrentPlayerName() {
+        return mCurrentPlayer;
+    }
+
+    public boolean hasEnded() {
+        return mHasEnded;
     }
 
 }
