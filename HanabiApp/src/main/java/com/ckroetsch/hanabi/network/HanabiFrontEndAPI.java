@@ -37,12 +37,11 @@ public interface HanabiFrontEndAPI {
     @POST(Constants.API_JOIN)
     void join(@Path("id") int id,
               @Field("name") String name,
-              Callback<Boolean> callback);
+              Callback<GameResponse> callback);
 
-    @FormUrlEncoded
     @POST(Constants.API_START)
     void start(@Path("id") int id,
-               Callback<Boolean> callback);
+               Callback<GameResponse> callback);
 
     @FormUrlEncoded
     @POST(Constants.API_PLAY)

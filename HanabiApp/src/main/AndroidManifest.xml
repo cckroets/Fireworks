@@ -11,6 +11,7 @@
                    android:value="com.ckroetsch.hanabi.injection.HanabiModule" />
         <activity
             android:name=".app.MainActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

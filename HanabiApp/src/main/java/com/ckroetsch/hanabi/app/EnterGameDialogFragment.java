@@ -41,7 +41,7 @@ public class EnterGameDialogFragment extends RoboDialogFragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         try {
                             final int id = Integer.parseInt(idView.getText().toString());
-                            mListener.onGameEnter(id, nameView.getText().toString());
+                            mListener.onGameEnter(id, nameView.getText().toString(), dialogInterface);
                         } catch (NumberFormatException e) {
                             dialogInterface.dismiss();
                             Toast.makeText(getActivity(), "That Game ID is invalid", Toast.LENGTH_SHORT).show();
@@ -51,7 +51,7 @@ public class EnterGameDialogFragment extends RoboDialogFragment {
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        mListener.onCancel();
+                        mListener.onCancel(dialogInterface);
                     }
                 });
         return builder.create();
@@ -59,7 +59,7 @@ public class EnterGameDialogFragment extends RoboDialogFragment {
 
 
     public interface EnterDialogListener {
-        void onGameEnter(int id, String name);
-        void onCancel();
+        void onGameEnter(int id, String name, DialogInterface dialogInterface);
+        void onCancel(DialogInterface dialogInterface);
     }
 }

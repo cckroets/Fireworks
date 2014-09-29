@@ -41,20 +41,20 @@ public class CreateGameDialogFragment extends RoboDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Log.d("CREATE PRESSED", "mListener = " + mListener);
-                        mListener.onGameCreate(nameView.getText().toString(), rainbowView.isChecked());
+                        mListener.onGameCreate(nameView.getText().toString(), rainbowView.isChecked(), dialogInterface);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        mListener.onCancel();
+                        mListener.onCancel(dialogInterface);
                     }
                 });
         return builder.create();
     }
 
     public interface CreateDialogListener {
-        public void onGameCreate(String name, boolean rainbow);
-        public void onCancel();
+        public void onGameCreate(String name, boolean rainbow, DialogInterface dialogInterface);
+        public void onCancel(DialogInterface dialogInterface);
     }
 }

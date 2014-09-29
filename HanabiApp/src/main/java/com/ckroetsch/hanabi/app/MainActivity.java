@@ -29,9 +29,9 @@ public class MainActivity extends RoboFragmentActivity {
                 .commit();
     }
 
-    public void openGameFragment(Game game) {
+    public void openGameFragment(Game game, String name) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Fragment gameFragment = GameFragment.createInstance(game);
+        Fragment gameFragment = GameFragment.createInstance(game, name);
         transaction.replace(R.id.fragment_container, gameFragment)
                 .commit();
     }

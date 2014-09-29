@@ -33,27 +33,25 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_alignParentBottom="true"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
         <Button
-            android:id="@+id/button_play"
-            android:text="Play"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:id="@+id/button_join"
+            android:layout_gravity="center_horizontal"
+            android:text="Join Game"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <Button
-            android:id="@+id/button_discard"
-            android:text="Discard"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:visibility="invisible"
+            android:id="@+id/button_start"
+            android:layout_gravity="center_horizontal"
+            android:text="Start Game"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-
-    </LinearLayout>
+    </FrameLayout>
 
 </LinearLayout>

@@ -8,15 +8,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ckroetsch.hanabi.R;
 import com.ckroetsch.hanabi.model.Card;
 import com.ckroetsch.hanabi.model.Game;
+import com.ckroetsch.hanabi.model.GameResponse;
 import com.ckroetsch.hanabi.model.Player;
-import com.ckroetsch.hanabi.model.Suit;
 import com.ckroetsch.hanabi.network.HanabiFrontEndAPI;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,6 +39,7 @@ import roboguice.inject.InjectView;
 public class GameFragment extends RoboFragment {
 
     public static final String KEY_GAME = "game";
+    public static final String KEY_NAME = "name";
 
     private static final String TAG = GameFragment.class.getName();
 
@@ -46,15 +49,26 @@ public class GameFragment extends RoboFragment {
     @InjectView(R.id.board_container)
     LinearLayout mBoard;
 
+    @InjectView(R.id.button_join)
+    Button mJoinButton;
+
+    @InjectView(R.id.button_start)
+    Button mStartButton;
+
     @Inject
     HanabiFrontEndAPI mHanabiAPI;
 
+    Game mGame;
+
+    String mName;
+
     Handler mHander = new Handler();
 
-    public static GameFragment createInstance(Game game) {
+    public static GameFragment createInstance(Game game, String name) {
         final GameFragment fragment = new GameFragment();
         final ObjectMapper mapper = new ObjectMapper();
         final Bundle args = new Bundle();
+        args.putString(KEY_NAME, name);
         try {
             String gameJSON = mapper.writeValueAsString(game);
             Log.d(TAG, "gameJSON = " + gameJSON);
@@ -70,15 +84,17 @@ public class GameFragment extends RoboFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final String gameJSON = getArguments().getString(KEY_GAME);
+        mName = getArguments().getString(KEY_NAME);
         final ObjectMapper objectMapper = new ObjectMapper();
         try {
             Log.d(TAG, "gameJSON = " + gameJSON);
             final Game game = objectMapper.readValue(gameJSON, Game.class);
             Log.d(TAG, "gameJSON = " + game);
+            mGame = game;
             mHander.post(new Runnable() {
                 @Override
                 public void run() {
-                    bindGame(game);
+                    bindGame(mGame);
                 }
             });
         } catch (IOException e) {
@@ -102,6 +118,57 @@ public class GameFragment extends RoboFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mJoinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mHanabiAPI.join(mGame.getId(), mName, new Callback<GameResponse>() {
+                    @Override
+                    public void success(GameResponse gameResponse, Response response) {
+                        if (gameResponse.isSuccess()) {
+                            mJoinButton.setVisibility(View.INVISIBLE);
+                            mStartButton.setVisibility(View.VISIBLE);
+                            mGame = gameResponse.getGame();
+                            bindGame(mGame);
+                        } else {
+                            Log.e(TAG, "join failed.");
+                            Toast.makeText(getActivity(), "Could not join game", Toast.LENGTH_SHORT).show();
+                            mJoinButton.setVisibility(View.INVISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e(TAG, "join error: " + error.getMessage());
+                        Toast.makeText(getActivity(), "Could not join game", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+        mStartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mHanabiAPI.start(mGame.getId(), new Callback<GameResponse>() {
+                    @Override
+                    public void success(GameResponse gameResponse, Response response) {
+                        if (gameResponse.isSuccess()) {
+                            Log.e(TAG, "start success");
+                            mGame = gameResponse.getGame();
+                            bindGame(mGame);
+                            mStartButton.setVisibility(View.GONE);
+                        } else {
+                            Log.e(TAG, "start failed");
+                            Toast.makeText(getActivity(), "Could not start game", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e(TAG, "start error: " + error.getMessage());
+                        Toast.makeText(getActivity(), "Could not start game", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
     }
 
     private void bindGame(Game game) {
