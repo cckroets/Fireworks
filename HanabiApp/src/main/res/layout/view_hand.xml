@@ -4,8 +4,6 @@
     android:layout_height="wrap_content"
     android:padding="10dp"
     android:orientation="vertical"
-    android:clickable="true"
-    android:background="#ca0086a7"
     android:layout_width="match_parent">
 
     <LinearLayout
@@ -18,9 +16,11 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_margin="1dp"
-            android:text="Curtis Kroetsch"
+            android:text="Curtis"
+            android:textColor="@android:color/white"
             android:gravity="left"
-            android:textSize="10pt"
+            android:textSize="12pt"
+            android:fontFamily="sans-serif-light"
             android:drawableRight="@android:drawable/star_off"
             android:drawablePadding="10dp"/>
 

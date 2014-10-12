@@ -1,4 +1,8 @@
+.idea
 .gradle
+build
+HanabiApp/build
+HanabiApp/libs
 /local.properties
 /.idea/workspace.xml
 .DS_Store

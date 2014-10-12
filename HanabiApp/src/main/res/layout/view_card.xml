@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ckroetsch.hanabi.view.CardView xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:clickable="true"
+              android:background="@drawable/card"
               android:layout_margin="4dp"
               android:layout_width="48dp"
               android:layout_height="64dp">
@@ -14,7 +15,8 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="3"
+        android:fontFamily="sans-serif-light"
         android:textColor="@android:color/black"
-        android:textSize="20pt"/>
+        android:textSize="24pt"/>
 
-</FrameLayout>
+</com.ckroetsch.hanabi.view.CardView>

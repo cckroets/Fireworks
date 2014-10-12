@@ -1,10 +1,14 @@
 package com.ckroetsch.hanabi.app;
 
+import android.content.ClipData;
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -20,6 +24,7 @@ import com.ckroetsch.hanabi.model.Game;
 import com.ckroetsch.hanabi.model.GameResponse;
 import com.ckroetsch.hanabi.model.Player;
 import com.ckroetsch.hanabi.network.HanabiFrontEndAPI;
+import com.ckroetsch.hanabi.view.CardView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
@@ -62,7 +67,7 @@ public class GameFragment extends RoboFragment {
 
     String mName;
 
-    Handler mHander = new Handler();
+    Handler mHandler = new Handler();
 
     public static GameFragment createInstance(Game game, String name) {
         final GameFragment fragment = new GameFragment();
@@ -91,7 +96,7 @@ public class GameFragment extends RoboFragment {
             final Game game = objectMapper.readValue(gameJSON, Game.class);
             Log.d(TAG, "gameJSON = " + game);
             mGame = game;
-            mHander.post(new Runnable() {
+            mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     bindGame(mGame);
@@ -187,18 +192,21 @@ public class GameFragment extends RoboFragment {
 
     class PlayersAdapter extends ArrayAdapter<Player> {
 
+        final LayoutInflater mInflater;
+
         public PlayersAdapter(Context context, List<Player> players) {
             super(context, R.layout.view_hand, players);
+            mInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
+
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            final LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            ViewHolder holder;
+            final ViewHolder holder;
 
             if (convertView == null || convertView.getTag() == null) {
-                convertView = inflater.inflate(R.layout.view_hand, null);
+                convertView = mInflater.inflate(R.layout.view_hand, null);
                 holder = new ViewHolder();
                 holder.name = (TextView) convertView.findViewById(R.id.hand_name);
                 holder.cardContainer = (LinearLayout) convertView.findViewById(R.id.hand_container);
@@ -211,29 +219,86 @@ public class GameFragment extends RoboFragment {
 
             holder.name.setText(player.getName());
             holder.cardContainer.removeAllViews();
-            for (Card card : player.getHand()) {
-                final View cardView = inflater.inflate(R.layout.view_card, holder.cardContainer, false);
-                TextView cardNumber = (TextView) cardView.findViewById(R.id.card_number);
-                cardNumber.setText("" + card.getValue());
-                cardNumber.setBackgroundResource(card.getSuit().getColorId());
+            boolean isMe = player.getName().equals("Curtis");//mName);
+            int index = 0;
+            for (final Card card : player.getHand()) {
+                final int cardIndex = index;
+                final CardView cardView = (CardView) mInflater.inflate(R.layout.view_card, holder.cardContainer, false);
+                if (isMe) {
+                    cardView.bindWithUnknown();
+                } else {
+                    cardView.bindWithCard(card);
+                }
+                cardView.setOnDragListener(new CardDragListener(player.getName(), cardIndex));
+                cardView.setOnTouchListener(new View.OnTouchListener() {
+
+                    @Override
+                    public boolean onTouch(View view, MotionEvent event) {
+                        final ClipData dragData = ClipData.newPlainText("data", cardIndex + "");
+                        final View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+                        final CardState state = new CardState();
+                        state.index = cardIndex;
+                        state.player = player.getName();
+                        state.card = card;
+                        view.startDrag(dragData, shadowBuilder, state, 0);
+                        return true;
+                    }
+                });
                 holder.cardContainer.addView(cardView);
+                index++;
             }
             return convertView;
-        }
-
-        @Override
-        public int getCount() {
-            return super.getCount();
-        }
-
-        @Override
-        public Player getItem(int position) {
-            return super.getItem(position);
         }
     }
 
     class ViewHolder {
         TextView name;
         LinearLayout cardContainer;
+    }
+
+
+    class CardDragListener implements View.OnDragListener {
+
+        final String mName;
+        final int mIndex;
+
+        public CardDragListener(String player, int cardIndex) {
+            mName = player;
+            mIndex = cardIndex;
+        }
+
+        private boolean isMyDragEvent(DragEvent dragEvent) {
+            CardState state = (CardState) dragEvent.getLocalState();
+            return mIndex == state.index && mName.equals(state.player);
+        }
+
+
+        @Override
+        public boolean onDrag(View view, DragEvent dragEvent) {
+            if (!isMyDragEvent(dragEvent)) {
+                return false;
+            }
+
+            switch (dragEvent.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    view.setVisibility(View.INVISIBLE);
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                case DragEvent.ACTION_DRAG_LOCATION:
+                case DragEvent.ACTION_DRAG_EXITED:
+                    break;
+                case DragEvent.ACTION_DROP:
+                case DragEvent.ACTION_DRAG_ENDED:
+                    view.setVisibility(View.VISIBLE);
+                    break;
+            }
+            return true;
+        }
+    }
+
+    static class CardState {
+        Card card;
+        String player;
+        int index;
     }
 }

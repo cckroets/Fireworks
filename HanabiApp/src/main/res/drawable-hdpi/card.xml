@@ -6,7 +6,7 @@
     <corners android:radius="4dp" />
 
 
-    <solid android:color="@color/card_background" />
+    <solid android:color="@android:color/transparent" />
 
     <stroke android:width="2dp"
             android:color="@color/card_trim" />
