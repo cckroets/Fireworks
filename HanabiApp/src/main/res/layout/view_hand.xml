@@ -1,64 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
-    android:padding="10dp"
-    android:orientation="vertical"
-    android:layout_width="match_parent">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/hand_name_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/hand_name"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_margin="1dp"
-            android:text="Curtis"
-            android:textColor="@android:color/white"
-            android:gravity="left"
-            android:textSize="12pt"
-            android:fontFamily="sans-serif-light"
-            android:drawableRight="@android:drawable/star_off"
-            android:drawablePadding="10dp"/>
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/hand_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:padding="10dp">
 
-        <include layout="@layout/view_card"
-                 android:layout_width="0dp"
-                 android:layout_height="match_parent"
-                 android:layout_weight="0.2"/>
+        <LinearLayout
+            android:id="@+id/hand_name_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <include layout="@layout/view_card"
-                 android:layout_width="0dp"
-                 android:layout_height="match_parent"
-                 android:layout_weight="0.2"/>
+            <TextView
+                android:id="@+id/hand_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:drawablePadding="10dp"
+                android:drawableRight="@android:drawable/star_off"
+                android:fontFamily="sans-serif-light"
+                android:gravity="left"
+                android:text="Curtis"
+                android:textColor="@android:color/white"
+                android:textSize="12pt"/>
 
-        <include layout="@layout/view_card"
-                 android:layout_width="0dp"
-                 android:layout_height="match_parent"
-                 android:layout_weight="0.2"/>
-
-        <include layout="@layout/view_card"
-                 android:layout_width="0dp"
-                 android:layout_height="match_parent"
-                 android:layout_weight="0.2"/>
-
-        <include layout="@layout/view_card"
-                 android:layout_width="0dp"
-                 android:layout_height="match_parent"
-                 android:layout_weight="0.2"/>
+        </LinearLayout>
 
 
+        <LinearLayout
+            android:id="@+id/hand_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
+            <include
+                layout="@layout/view_card"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2"/>
+
+            <include
+                layout="@layout/view_card"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2"/>
+
+            <include
+                layout="@layout/view_card"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2"/>
+
+            <include
+                layout="@layout/view_card"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2"/>
+
+            <include
+                layout="@layout/view_card"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2"/>
+
+
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+
+    <View
+        android:id="@+id/blinker"
+        android:visibility="invisible"
+        android:alpha="0"
+        android:background="@color/pastel_white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</FrameLayout>

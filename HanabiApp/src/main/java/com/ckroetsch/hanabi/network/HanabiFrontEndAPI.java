@@ -47,14 +47,14 @@ public interface HanabiFrontEndAPI {
     @POST(Constants.API_PLAY)
     void play(@Path("id") int id,
               @Field("name") String name,
-              @Field("card") int index,
+              @Field("cardIndex") int index,
               Callback<GameResponse> callback);
 
     @FormUrlEncoded
     @POST(Constants.API_DISCARD)
     void discard(@Path("id") int id,
                  @Field("name") String name,
-                 @Field("card") int index,
+                 @Field("cardIndex") int index,
                  Callback<GameResponse> callback);
 
     @FormUrlEncoded

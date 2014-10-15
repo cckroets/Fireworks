@@ -1,8 +1,10 @@
 package com.ckroetsch.hanabi.app;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.ClipData;
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -60,6 +62,12 @@ public class GameFragment extends RoboFragment {
     @InjectView(R.id.button_start)
     Button mStartButton;
 
+    @InjectView(R.id.discard)
+    View mDiscard;
+
+    @Inject
+    LayoutInflater mInflater;
+
     @Inject
     HanabiFrontEndAPI mHanabiAPI;
 
@@ -112,17 +120,13 @@ public class GameFragment extends RoboFragment {
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
-    private void bindCard(LayoutInflater inflater, Card card) {
-        final View cardView = inflater.inflate(R.layout.view_card, mBoard, false);
-        final TextView cardValue = (TextView) cardView.findViewById(R.id.card_number);
-        cardValue.setText((card.getValue() == 0) ? "X" : "" + card.getValue());
-        cardValue.setBackgroundResource(card.getSuit().getColorId());
-        mBoard.addView(cardView);
-    }
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (mGame.hasStarted()) {
+            mJoinButton.setVisibility(View.GONE);
+            mStartButton.setVisibility(View.GONE);
+        }
         mJoinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,7 +141,7 @@ public class GameFragment extends RoboFragment {
                         } else {
                             Log.e(TAG, "join failed.");
                             Toast.makeText(getActivity(), "Could not join game", Toast.LENGTH_SHORT).show();
-                            mJoinButton.setVisibility(View.INVISIBLE);
+                            mJoinButton.setVisibility(View.GONE);
                         }
                     }
 
@@ -174,6 +178,82 @@ public class GameFragment extends RoboFragment {
                 });
             }
         });
+        mDiscard.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View view, DragEvent dragEvent) {
+                if (dragEvent.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+                    view.setTranslationY(200f);
+                    view.setAlpha(0f);
+                    view.animate().translationY(0f).alpha(1f).start();
+                    return true;
+                } else if (dragEvent.getAction() == DragEvent.ACTION_DROP) {
+                    final CharSequence indexString = dragEvent.getClipData().getItemAt(0).coerceToText(getActivity());
+                    final int index = Integer.parseInt(indexString.toString());
+                    Log.d(TAG, "discarding " + index);
+                    mHanabiAPI.discard(mGame.getId(), mName, index, new Callback<GameResponse>() {
+                        @Override
+                        public void success(GameResponse gameResponse, Response response) {
+                            if (gameResponse.isSuccess()) {
+                                mGame = gameResponse.getGame();
+                                bindGame(mGame);
+                                Log.d(TAG, "successfully discarded " + index);
+                                Toast.makeText(getActivity(), "Discarded: " + index, Toast.LENGTH_SHORT).show();
+                            } else {
+                                failure(null);
+                            }
+
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            Log.d(TAG, "failed to discard " + index);
+                            Toast.makeText(getActivity(), "Failed to discard: " + index, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    return true;
+                } else if (dragEvent.getAction() == DragEvent.ACTION_DRAG_ENDED) {
+                    view.animate().translationY(200f).alpha(0f).start();
+                    return true;
+                }
+                return true;
+            }
+        });
+        mBoard.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View view, DragEvent dragEvent) {
+                if (dragEvent.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+                    return true;
+                } else if (dragEvent.getAction() == DragEvent.ACTION_DROP) {
+                    final CharSequence indexString = dragEvent.getClipData().getItemAt(0).coerceToText(getActivity());
+                    final int index = Integer.parseInt(indexString.toString());
+                    Log.d(TAG, "playing " + index);
+                    mHanabiAPI.play(mGame.getId(), mName, index, new Callback<GameResponse>() {
+                        @Override
+                        public void success(GameResponse gameResponse, Response response) {
+                            if (gameResponse.isSuccess()) {
+                                mGame = gameResponse.getGame();
+                                bindGame(mGame);
+                                Log.d(TAG, "successfully played " + index);
+                                Toast.makeText(getActivity(), "Played: " + index, Toast.LENGTH_SHORT).show();
+                            } else {
+                                failure(null);
+                            }
+
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            Log.d(TAG, "failed to play " + index);
+                            Toast.makeText(getActivity(), "Failed to play: " + index, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    return true;
+                } else if (dragEvent.getAction() == DragEvent.ACTION_DRAG_ENDED) {
+                    return true;
+                }
+                return true;
+            }
+        });
     }
 
     private void bindGame(Game game) {
@@ -183,12 +263,17 @@ public class GameFragment extends RoboFragment {
     }
 
     private void bindBoard(Game game) {
-        final LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mBoard.removeAllViews();
         for (Card card : game.getState()) {
-            bindCard(inflater, card);
+            bindCard(card);
         }
     }
 
+    private void bindCard(Card card) {
+        final CardView cardView = (CardView) mInflater.inflate(R.layout.view_card, mBoard, false);
+        cardView.bindWithCard(card);
+        mBoard.addView(cardView);
+    }
 
     class PlayersAdapter extends ArrayAdapter<Player> {
 
@@ -210,6 +295,7 @@ public class GameFragment extends RoboFragment {
                 holder = new ViewHolder();
                 holder.name = (TextView) convertView.findViewById(R.id.hand_name);
                 holder.cardContainer = (LinearLayout) convertView.findViewById(R.id.hand_container);
+                holder.blinker = convertView.findViewById(R.id.blinker);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -219,18 +305,31 @@ public class GameFragment extends RoboFragment {
 
             holder.name.setText(player.getName());
             holder.cardContainer.removeAllViews();
-            boolean isMe = player.getName().equals("Curtis");//mName);
+            boolean isMe = player.getName().equals(mName);
+            if (player.getName().equals(mGame.getCurrentPlayerName())) {
+                holder.blinker.setAlpha(0f);
+                holder.blinker.setVisibility(View.VISIBLE);
+                ObjectAnimator animator = ObjectAnimator.ofFloat(holder.blinker, View.ALPHA, 0.05f);
+                animator.setRepeatMode(ValueAnimator.REVERSE);
+                animator.setRepeatCount(ValueAnimator.INFINITE);
+                animator.setDuration(400);
+                animator.start();
+            } else {
+                holder.blinker.setVisibility(View.INVISIBLE);
+            }
+
             int index = 0;
             for (final Card card : player.getHand()) {
                 final int cardIndex = index;
                 final CardView cardView = (CardView) mInflater.inflate(R.layout.view_card, holder.cardContainer, false);
                 if (isMe) {
-                    cardView.bindWithUnknown();
+                    cardView.bindWithCard(card);
+                    //cardView.bindWithUnknown();
                 } else {
                     cardView.bindWithCard(card);
                 }
                 cardView.setOnDragListener(new CardDragListener(player.getName(), cardIndex));
-                cardView.setOnTouchListener(new View.OnTouchListener() {
+                /*cardView.setOnTouchListener(new View.OnTouchListener() {
 
                     @Override
                     public boolean onTouch(View view, MotionEvent event) {
@@ -243,7 +342,14 @@ public class GameFragment extends RoboFragment {
                         view.startDrag(dragData, shadowBuilder, state, 0);
                         return true;
                     }
+                }); */
+                cardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        HintDialogFragment.create(player).show(getFragmentManager(), null);
+                    }
                 });
+
                 holder.cardContainer.addView(cardView);
                 index++;
             }
@@ -251,50 +357,12 @@ public class GameFragment extends RoboFragment {
         }
     }
 
-    class ViewHolder {
+    static class ViewHolder {
         TextView name;
         LinearLayout cardContainer;
+        View blinker;
     }
 
-
-    class CardDragListener implements View.OnDragListener {
-
-        final String mName;
-        final int mIndex;
-
-        public CardDragListener(String player, int cardIndex) {
-            mName = player;
-            mIndex = cardIndex;
-        }
-
-        private boolean isMyDragEvent(DragEvent dragEvent) {
-            CardState state = (CardState) dragEvent.getLocalState();
-            return mIndex == state.index && mName.equals(state.player);
-        }
-
-
-        @Override
-        public boolean onDrag(View view, DragEvent dragEvent) {
-            if (!isMyDragEvent(dragEvent)) {
-                return false;
-            }
-
-            switch (dragEvent.getAction()) {
-                case DragEvent.ACTION_DRAG_STARTED:
-                    view.setVisibility(View.INVISIBLE);
-                    break;
-                case DragEvent.ACTION_DRAG_ENTERED:
-                case DragEvent.ACTION_DRAG_LOCATION:
-                case DragEvent.ACTION_DRAG_EXITED:
-                    break;
-                case DragEvent.ACTION_DROP:
-                case DragEvent.ACTION_DRAG_ENDED:
-                    view.setVisibility(View.VISIBLE);
-                    break;
-            }
-            return true;
-        }
-    }
 
     static class CardState {
         Card card;
