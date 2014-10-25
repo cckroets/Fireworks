@@ -4,17 +4,14 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.ClipData;
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -26,8 +23,8 @@ import com.ckroetsch.hanabi.model.Card;
 import com.ckroetsch.hanabi.model.Game;
 import com.ckroetsch.hanabi.model.GameResponse;
 import com.ckroetsch.hanabi.model.Player;
-import com.ckroetsch.hanabi.network.HanabiFrontEndAPI;
-import com.ckroetsch.hanabi.network.HanabiSocket;
+import com.ckroetsch.hanabi.network.HanabiRetrofitFrontEndAPI;
+import com.ckroetsch.hanabi.network.HanabiSocketIO;
 import com.ckroetsch.hanabi.util.JsonUtil;
 import com.ckroetsch.hanabi.view.CardView;
 import com.ckroetsch.hanabi.view.FakeListView;
@@ -70,7 +67,7 @@ public class GameFragment extends RoboFragment {
     LayoutInflater mInflater;
 
     @Inject
-    HanabiFrontEndAPI mHanabiAPI;
+    HanabiRetrofitFrontEndAPI mHanabiAPI;
 
     Game mGame;
 
@@ -90,7 +87,7 @@ public class GameFragment extends RoboFragment {
         super.onCreate(savedInstanceState);
         final String gameJSON = getArguments().getString(KEY_GAME);
         mName = getArguments().getString(KEY_NAME);
-        HanabiSocket socketIo = new HanabiSocket();
+        HanabiSocketIO socketIo = new HanabiSocketIO();
         socketIo.connect();
         Log.d(TAG, "gameJSON = " + gameJSON);
         final Game game = JsonUtil.jsonToObject(gameJSON, Game.class);
@@ -122,7 +119,7 @@ public class GameFragment extends RoboFragment {
                 mHanabiAPI.join(mGame.getId(), mName, new Callback<GameResponse>() {
                     @Override
                     public void success(GameResponse gameResponse, Response response) {
-                        if (gameResponse.isSuccess()) {
+                        if (false) { //gameResponse.isSuccess()) {
                             mJoinButton.setVisibility(View.INVISIBLE);
                             mStartButton.setVisibility(View.VISIBLE);
                             mGame = gameResponse.getGame();
@@ -148,7 +145,7 @@ public class GameFragment extends RoboFragment {
                 mHanabiAPI.start(mGame.getId(), new Callback<GameResponse>() {
                     @Override
                     public void success(GameResponse gameResponse, Response response) {
-                        if (gameResponse.isSuccess()) {
+                        if (false) { //gameResponse.isSuccess()) {
                             Log.e(TAG, "start success");
                             mGame = gameResponse.getGame();
                             bindGame(mGame);
@@ -182,7 +179,7 @@ public class GameFragment extends RoboFragment {
                     mHanabiAPI.discard(mGame.getId(), mName, index, new Callback<GameResponse>() {
                         @Override
                         public void success(GameResponse gameResponse, Response response) {
-                            if (gameResponse.isSuccess()) {
+                            if (true) { // gameResponse.isSuccess()) {
                                 mGame = gameResponse.getGame();
                                 bindGame(mGame);
                                 Log.d(TAG, "successfully discarded " + index);
@@ -219,7 +216,7 @@ public class GameFragment extends RoboFragment {
                     mHanabiAPI.play(mGame.getId(), mName, index, new Callback<GameResponse>() {
                         @Override
                         public void success(GameResponse gameResponse, Response response) {
-                            if (gameResponse.isSuccess()) {
+                            if (true) { // gameResponse.isSuccess()) {
                                 mGame = gameResponse.getGame();
                                 bindGame(mGame);
                                 Log.d(TAG, "successfully played " + index);

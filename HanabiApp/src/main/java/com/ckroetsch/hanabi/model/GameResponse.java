@@ -6,24 +6,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * @author curtiskroetsch
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public final class GameResponse {
 
-    @JsonProperty("success")
-    boolean mSuccess;
-
-    @JsonProperty("game")
-    Game mGame;
+    Boolean name;
+    Game game;
+    Integer cardIndex;
 
     private GameResponse() {
 
     }
 
-    public boolean isSuccess() {
-        return mSuccess;
+    public boolean getName() {
+        return name;
     }
 
     public Game getGame() {
-        return mGame;
+        return game;
+    }
+
+    public int getCardIndex() {
+        return cardIndex;
     }
 }

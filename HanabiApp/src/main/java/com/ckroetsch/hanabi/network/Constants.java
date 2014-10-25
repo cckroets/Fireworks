@@ -13,7 +13,7 @@ public final class Constants {
 
     public static final String API_URL = API_URL_PROD;
 
-    public static final String SOCKET_URL = SOCKET_URL_PROD;
+    public static final String SOCKET_URL = SOCKET_URL_TEST;
 
     // Start game
     public static final String API_CREATE = "/create";

@@ -4,8 +4,13 @@ import android.content.Context;
 
 import com.ckroetsch.hanabi.network.Constants;
 import com.ckroetsch.hanabi.network.HanabiFrontEndAPI;
+import com.ckroetsch.hanabi.network.HanabiRetrofitFrontEndAPI;
+import com.ckroetsch.hanabi.network.HanabiSocket;
+import com.ckroetsch.hanabi.network.HanabiSocketFrontEndAPI;
+import com.ckroetsch.hanabi.network.HanabiSocketIO;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import retrofit.RestAdapter;
 import retrofit.converter.JacksonConverter;
@@ -25,14 +30,16 @@ public class HanabiModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(HanabiFrontEndAPI.class).toInstance(getRetrofitImpl());
+        bind(HanabiRetrofitFrontEndAPI.class).toInstance(getRetrofitImpl());
+        bind(HanabiSocket.class).to(HanabiSocketIO.class).in(Singleton.class);
+        bind(HanabiFrontEndAPI.class).to(HanabiSocketFrontEndAPI.class).in(Singleton.class);
     }
 
-    public HanabiFrontEndAPI getRetrofitImpl() {
+    private HanabiRetrofitFrontEndAPI getRetrofitImpl() {
         final RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(Constants.API_URL)
                 .setConverter(new JacksonConverter())
                 .build();
-        return restAdapter.create(HanabiFrontEndAPI.class);
+        return restAdapter.create(HanabiRetrofitFrontEndAPI.class);
     }
 }

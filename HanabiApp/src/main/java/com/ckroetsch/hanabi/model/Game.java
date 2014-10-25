@@ -8,105 +8,73 @@ import java.util.List;
 /**
  * @author curtiskroetsch
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public final class Game {
 
-    @JsonProperty("id")
-    int mId;
-
-    @JsonProperty("numCardsRemaining")
-    int mCardsRemaining;
-
-    @JsonProperty("isRainbow")
-    boolean mIsRainbow;
-
-    @JsonProperty("numHints")
-    int mHints;
-
-    @JsonProperty("numLives")
-    int mLives;
-
-    @JsonProperty("players")
-    List<Player> mPlayers;
-
-    @JsonProperty("spectators")
-    List<Spectator> mSpectators;
-
-    @JsonProperty("played")
-    List<Card> mPlayed;
-
-    @JsonProperty("discarded")
-    List<Card> mDiscarded;
-
-    @JsonProperty("currentPlayer")
-    String mCurrentPlayer;
-
-    @JsonProperty("hasEnded")
-    boolean mHasEnded;
-
-    @JsonProperty("hasStarted")
-    boolean mHasStarted;
-
-    @JsonProperty("state")
-    Object object;
+    Integer id;
+    Integer numCardsRemaining;
+    Boolean isRainbow;
+    Integer numHints;
+    Integer numLives;
+    List<Player> players;
+    List<Spectator> spectators;
+    List<Card> played;
+    List<Card> discarded;
+    String currentPlayer;
+    Boolean hasEnded;
+    Boolean hasStarted;
 
     private Game() {
-
     }
 
     public int getId() {
-        return mId;
-    }
-
-    public void setId(int id) {
-        mId = id;
+        return id;
     }
 
     public int getCardsRemaining() {
-        return mCardsRemaining;
+        return numCardsRemaining;
     }
 
     public int getNumPlayers() {
-        return mPlayers.size();
+        return players.size();
     }
 
     public boolean isRainbow() {
-        return mIsRainbow;
+        return isRainbow;
     }
 
     public int getHints() {
-        return mHints;
+        return numHints;
     }
 
     public int getLives() {
-        return mLives;
+        return numLives;
     }
 
     public List<Player> getPlayers() {
-        return mPlayers;
+        return players;
     }
 
     public List<Spectator> getSpectators() {
-        return mSpectators;
+        return spectators;
     }
 
     public List<Card> getPlayed() {
-        return mPlayed;
+        return played;
     }
 
     public List<Card> getDiscarded() {
-        return mDiscarded;
+        return discarded;
     }
 
     public String getCurrentPlayerName() {
-        return mCurrentPlayer;
+        return currentPlayer;
     }
 
-    public boolean hasEnded() {
-        return mHasEnded;
+            public boolean hasEnded() {
+        return hasEnded;
     }
 
     public boolean hasStarted() {
-        return mHasStarted;
+        return hasStarted;
     }
 }

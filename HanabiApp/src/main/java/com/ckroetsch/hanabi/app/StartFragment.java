@@ -14,7 +14,8 @@ import android.widget.Toast;
 import com.ckroetsch.hanabi.R;
 import com.ckroetsch.hanabi.model.Game;
 import com.ckroetsch.hanabi.model.GameResponse;
-import com.ckroetsch.hanabi.network.HanabiFrontEndAPI;
+import com.ckroetsch.hanabi.network.HanabiRetrofitFrontEndAPI;
+import com.ckroetsch.hanabi.network.HanabiSocketIO;
 import com.google.inject.Inject;
 
 import retrofit.Callback;
@@ -39,7 +40,10 @@ public class StartFragment extends RoboFragment implements
     Button mEnterButton;
 
     @Inject
-    HanabiFrontEndAPI mHanabiAPI;
+    HanabiRetrofitFrontEndAPI mHanabiAPI;
+
+    @Inject
+    HanabiSocketIO mHanabiSocket;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,7 +61,7 @@ public class StartFragment extends RoboFragment implements
         mCreateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showCreateDialog();
+                mHanabiSocket.connect();
             }
         });
         mEnterButton.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +109,7 @@ public class StartFragment extends RoboFragment implements
         mHanabiAPI.enter(id, name, new Callback<GameResponse>() {
             @Override
             public void success(GameResponse response, Response networkResponse) {
-                if (response.isSuccess()) {
+                if (true) { //response.isSuccess()) {
                     Log.d(TAG, "Enter success: " + response.getGame().getLives());
                     ((MainActivity) getActivity()).openGameFragment(response.getGame(), name);
 
