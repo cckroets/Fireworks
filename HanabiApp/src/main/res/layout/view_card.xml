@@ -1,21 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.ckroetsch.hanabi.view.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:clickable="true"
-              android:background="@drawable/card"
-              android:layout_margin="4dp"
-              android:layout_width="48dp"
-              android:layout_height="64dp">
-    
-    <TextView
-        android:id="@+id/card_number"
-        android:background="@drawable/carbon"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:fontFamily="sans-serif-light"
-        android:textColor="@android:color/black"
-        android:textSize="24pt"/>
-
-</com.ckroetsch.hanabi.view.CardView>
+<com.ckroetsch.hanabi.view.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/carbon"
+    android:fontFamily="sans-serif-light"
+    android:gravity="center"
+    android:textColor="@android:color/black"
+    android:textSize="24pt"
+    tools:background="@color/pastel_yellow"
+    tools:text="3"/>

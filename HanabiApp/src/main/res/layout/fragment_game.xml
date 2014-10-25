@@ -31,12 +31,11 @@
         android:textColor="@android:color/white"
         android:text="It's Curtis's turn to play"/>
 
-    <ListView
+    <com.ckroetsch.hanabi.view.FakeListView
         android:id="@+id/players"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:divider="@null"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="wrap_content"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -66,16 +65,30 @@
 
     </FrameLayout>
 
-    <TextView
+    <LinearLayout
         android:id="@+id/discard"
-        android:layout_width="match_parent"
         android:translationY="200dp"
         android:alpha="0"
-        android:text="Discard"
-        android:fontFamily="sans-serif-light"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
-        android:gravity="center"
-        android:layout_height="60dp"/>
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#ff606060" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="Discard"
+            android:fontFamily="sans-serif-light"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:layout_height="60dp"/>
+
+    </LinearLayout>
+
+
 
 </LinearLayout>

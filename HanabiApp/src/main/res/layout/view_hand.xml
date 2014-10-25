@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:background="@drawable/table">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,52 +33,57 @@
 
         </LinearLayout>
 
-
-        <LinearLayout
-            android:id="@+id/hand_container"
+        <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content">
 
-            <include
-                layout="@layout/view_card"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.2"/>
+            <LinearLayout
+                android:id="@+id/hand_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-            <include
-                layout="@layout/view_card"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.2"/>
+                <include
+                    layout="@layout/view_card"
+                    android:layout_width="48dp"
+                    android:layout_height="64dp"
+                    android:layout_margin="5dp"/>
 
-            <include
-                layout="@layout/view_card"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.2"/>
+                <include
+                    layout="@layout/view_card"
+                    android:layout_width="48dp"
+                    android:layout_height="64dp"
+                    android:layout_margin="5dp"/>
 
-            <include
-                layout="@layout/view_card"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.2"/>
+                <include
+                    layout="@layout/view_card"
+                    android:layout_width="48dp"
+                    android:layout_height="64dp"
+                    android:layout_margin="5dp"/>
 
-            <include
-                layout="@layout/view_card"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.2"/>
+                <include
+                    layout="@layout/view_card"
+                    android:layout_width="48dp"
+                    android:layout_height="64dp"
+                    android:layout_margin="5dp"/>
 
+                <include
+                    layout="@layout/view_card"
+                    android:layout_width="48dp"
+                    android:layout_height="64dp"
+                    android:layout_margin="5dp"/>
 
-        </LinearLayout>
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
     </LinearLayout>
 
     <View
         android:id="@+id/blinker"
-        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:alpha="0"
         android:background="@color/pastel_white"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:visibility="invisible"/>
 </FrameLayout>

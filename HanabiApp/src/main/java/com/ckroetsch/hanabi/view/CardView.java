@@ -14,9 +14,7 @@ import com.google.inject.Inject;
 /**
  * @author curtiskroetsch
  */
-public class CardView extends FrameLayout {
-
-    TextView mContent;
+public class CardView extends TextView {
 
     public CardView(Context context) {
         super(context);
@@ -31,19 +29,13 @@ public class CardView extends FrameLayout {
     }
 
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        mContent = (TextView) findViewById(R.id.card_number);
-    }
-
     public void bindWithCard(Card card) {
-        mContent.setText(card.getValue() + "");
-        mContent.setBackgroundResource(card.getSuit().getColorId());
+        setText(card.getValue() + "");
+        setBackgroundResource(card.getSuit().getColorId());
     }
 
     public void bindWithUnknown() {
-        mContent.setText(null);
-        mContent.setBackgroundResource(R.drawable.carbon);
+        setText(null);
+        setBackgroundResource(R.drawable.carbon);
     }
 }

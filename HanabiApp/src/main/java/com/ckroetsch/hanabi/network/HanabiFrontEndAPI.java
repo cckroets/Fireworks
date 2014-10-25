@@ -83,7 +83,7 @@ public interface HanabiFrontEndAPI {
     void message(@Path("id") int id,
                  @Field("name") String name,
                  @Field("message") String message,
-                 Callback<Boolean> success);
+                 Callback<GameResponse> success);
 
 
 }

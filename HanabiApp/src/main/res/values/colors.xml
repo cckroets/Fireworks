@@ -2,9 +2,27 @@
 <resources>
     <color name="card_background">#caababab</color>
     <color name="card_trim">#ca494949</color>
+
+    <!-- http://www.tinygorilla.com/Easter_eggs/pallatehex.html -->
     <color name="pastel_white">#FFFFFF</color>
     <color name="pastel_blue">#00BFF3</color>
     <color name="pastel_red">#fff24441</color>
     <color name="pastel_yellow">#FFF467</color>
     <color name="pastel_green">#3BB878</color>
+
+    <color name="pastel_violet">#A187BE</color>
+    <color name="pastel_cyan">#6ECFF6</color>
+    <color name="pastel_yellow_green">#A2D39C</color>
+    <color name="pastel_yellow_orange">#FDC68A</color>
+    <color name="pastel_magenta">#F49AC2</color>
+
+
+    <color name="chat_spectator">#C2C2C2</color>
+    <array name="chat_players">
+        <item>@color/pastel_violet</item>
+        <item>@color/pastel_cyan</item>
+        <item>@color/pastel_yellow_green</item>
+        <item>@color/pastel_yellow_orange</item>
+        <item>@color/pastel_magenta</item>
+    </array>
 </resources>

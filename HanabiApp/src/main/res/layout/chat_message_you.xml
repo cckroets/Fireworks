@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:paddingTop="10dp"
+              android:paddingLeft="15dp"
+              android:paddingRight="15dp"
+              android:paddingBottom="5dp"
+              tools:background="@drawable/table"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/chat_initials"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="0dp"
+            android:background="@drawable/circle"
+            android:gravity="center"
+            android:padding="1dp"
+            android:text="Cu"
+            android:textColor="@color/pastel_white"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+
+
+    <FrameLayout
+        android:layout_marginTop="0dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/chat_message"
+        android:paddingLeft="20dp"
+        android:background="@drawable/chat_bubble_you_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingRight="15dp"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:maxWidth="250dp"
+        android:text="Played a yello 34444444\nyeah bro"
+        android:textColor="@color/pastel_white"
+        android:textSize="14sp"/>
+    </FrameLayout>
+</LinearLayout>

@@ -1,12 +1,13 @@
 package com.ckroetsch.hanabi.app;
 
 import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -26,12 +27,12 @@ import com.ckroetsch.hanabi.model.Game;
 import com.ckroetsch.hanabi.model.GameResponse;
 import com.ckroetsch.hanabi.model.Player;
 import com.ckroetsch.hanabi.network.HanabiFrontEndAPI;
+import com.ckroetsch.hanabi.network.HanabiSocket;
+import com.ckroetsch.hanabi.util.JsonUtil;
 import com.ckroetsch.hanabi.view.CardView;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ckroetsch.hanabi.view.FakeListView;
 import com.google.inject.Inject;
 
-import java.io.IOException;
 import java.util.List;
 
 import retrofit.Callback;
@@ -77,19 +78,10 @@ public class GameFragment extends RoboFragment {
 
     Handler mHandler = new Handler();
 
-    public static GameFragment createInstance(Game game, String name) {
+
+    public static GameFragment createInstance(Bundle args) {
         final GameFragment fragment = new GameFragment();
-        final ObjectMapper mapper = new ObjectMapper();
-        final Bundle args = new Bundle();
-        args.putString(KEY_NAME, name);
-        try {
-            String gameJSON = mapper.writeValueAsString(game);
-            Log.d(TAG, "gameJSON = " + gameJSON);
-            args.putString(KEY_GAME, gameJSON);
-            fragment.setArguments(args);
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException("Could not write JSON");
-        }
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -98,26 +90,23 @@ public class GameFragment extends RoboFragment {
         super.onCreate(savedInstanceState);
         final String gameJSON = getArguments().getString(KEY_GAME);
         mName = getArguments().getString(KEY_NAME);
-        final ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            Log.d(TAG, "gameJSON = " + gameJSON);
-            final Game game = objectMapper.readValue(gameJSON, Game.class);
-            Log.d(TAG, "gameJSON = " + game);
-            mGame = game;
-            mHandler.post(new Runnable() {
+        HanabiSocket socketIo = new HanabiSocket();
+        socketIo.connect();
+        Log.d(TAG, "gameJSON = " + gameJSON);
+        final Game game = JsonUtil.jsonToObject(gameJSON, Game.class);
+        Log.d(TAG, "gameJSON = " + game);
+        mGame = game;
+        mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     bindGame(mGame);
                 }
             });
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        return inflater.inflate(R.layout.fragment_game, container, false);
     }
 
     @Override
@@ -206,7 +195,7 @@ public class GameFragment extends RoboFragment {
 
                         @Override
                         public void failure(RetrofitError error) {
-                            Log.d(TAG, "failed to discard " + index);
+                            Log.d(TAG, "failed to discard " + index + " error = " + error.getMessage());
                             Toast.makeText(getActivity(), "Failed to discard: " + index, Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -243,7 +232,7 @@ public class GameFragment extends RoboFragment {
 
                         @Override
                         public void failure(RetrofitError error) {
-                            Log.d(TAG, "failed to play " + index);
+                            Log.d(TAG, "failed to play " + index + " error = " + error.getMessage());
                             Toast.makeText(getActivity(), "Failed to play: " + index, Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -256,6 +245,31 @@ public class GameFragment extends RoboFragment {
         });
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i(TAG, "onStart()");
+        bindGame(mGame);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume()");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.i(TAG, "onPause()");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.i(TAG, "onStop()");
+    }
+
     private void bindGame(Game game) {
         bindBoard(game);
         Log.d(TAG, "mPlayers: " + mPlayers);
@@ -264,7 +278,7 @@ public class GameFragment extends RoboFragment {
 
     private void bindBoard(Game game) {
         mBoard.removeAllViews();
-        for (Card card : game.getState()) {
+        for (Card card : game.getPlayed()) {
             bindCard(card);
         }
     }
@@ -275,94 +289,108 @@ public class GameFragment extends RoboFragment {
         mBoard.addView(cardView);
     }
 
-    class PlayersAdapter extends ArrayAdapter<Player> {
+    public float convertDpToPixel(float dp){
+        return dp * getActivity().getResources().getDisplayMetrics().density;
+    }
+
+    class PlayersAdapter extends FakeListView.FakeListAdapter<Player> {
 
         final LayoutInflater mInflater;
 
         public PlayersAdapter(Context context, List<Player> players) {
-            super(context, R.layout.view_hand, players);
+            super(context, players);
             mInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, final Player player) {
 
-            final ViewHolder holder;
+            final View handView = mInflater.inflate(R.layout.view_hand, null);
+            final TextView nameView =  (TextView) handView.findViewById(R.id.hand_name);
+            final LinearLayout cardContainer = (LinearLayout) handView.findViewById(R.id.hand_container);
+            final View blinker = handView.findViewById(R.id.blinker);
 
-            if (convertView == null || convertView.getTag() == null) {
-                convertView = mInflater.inflate(R.layout.view_hand, null);
-                holder = new ViewHolder();
-                holder.name = (TextView) convertView.findViewById(R.id.hand_name);
-                holder.cardContainer = (LinearLayout) convertView.findViewById(R.id.hand_container);
-                holder.blinker = convertView.findViewById(R.id.blinker);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-
-            final Player player = getItem(position);
-
-            holder.name.setText(player.getName());
-            holder.cardContainer.removeAllViews();
+            nameView.setText(player.getName());
+            cardContainer.removeAllViews();
             boolean isMe = player.getName().equals(mName);
             if (player.getName().equals(mGame.getCurrentPlayerName())) {
-                holder.blinker.setAlpha(0f);
-                holder.blinker.setVisibility(View.VISIBLE);
-                ObjectAnimator animator = ObjectAnimator.ofFloat(holder.blinker, View.ALPHA, 0.05f);
+                blinker.setAlpha(0f);
+                blinker.setVisibility(View.VISIBLE);
+                ObjectAnimator animator = ObjectAnimator.ofFloat(blinker, View.ALPHA, 0.05f);
                 animator.setRepeatMode(ValueAnimator.REVERSE);
                 animator.setRepeatCount(ValueAnimator.INFINITE);
                 animator.setDuration(400);
                 animator.start();
             } else {
-                holder.blinker.setVisibility(View.INVISIBLE);
+                blinker.setVisibility(View.INVISIBLE);
             }
+
+            handView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    HintDialogFragment.create(player).show(getFragmentManager(), null);
+                }
+            });
 
             int index = 0;
             for (final Card card : player.getHand()) {
                 final int cardIndex = index;
-                final CardView cardView = (CardView) mInflater.inflate(R.layout.view_card, holder.cardContainer, false);
+                final CardView cardView = (CardView) mInflater.inflate(R.layout.view_card, cardContainer, false);
+                LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                llp.width = (int) convertDpToPixel(48f);
+                llp.height = (int) convertDpToPixel(64f);
+                final int margin = (int) convertDpToPixel(5f);
+                llp.setMargins(margin, margin, margin, margin);
+                cardView.setLayoutParams(llp);
                 if (isMe) {
                     cardView.bindWithCard(card);
                     //cardView.bindWithUnknown();
                 } else {
                     cardView.bindWithCard(card);
                 }
-                cardView.setOnDragListener(new CardDragListener(player.getName(), cardIndex));
-                /*cardView.setOnTouchListener(new View.OnTouchListener() {
+                if (isMe) {
+                    cardView.setOnDragListener(new CardDragListener(player.getName(), cardIndex));
+                    cardView.setOnTouchListener(new View.OnTouchListener() {
 
-                    @Override
-                    public boolean onTouch(View view, MotionEvent event) {
-                        final ClipData dragData = ClipData.newPlainText("data", cardIndex + "");
-                        final View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
-                        final CardState state = new CardState();
-                        state.index = cardIndex;
-                        state.player = player.getName();
-                        state.card = card;
-                        view.startDrag(dragData, shadowBuilder, state, 0);
-                        return true;
-                    }
-                }); */
-                cardView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        HintDialogFragment.create(player).show(getFragmentManager(), null);
-                    }
-                });
+                        @Override
+                        public boolean onTouch(View view, MotionEvent event) {
+                            final ClipData dragData = ClipData.newPlainText("data", cardIndex + "");
+                            final View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+                            final CardState state = new CardState();
+                            state.index = cardIndex;
+                            state.player = player.getName();
+                            state.card = card;
+                            view.startDrag(dragData, shadowBuilder, state, 0);
+                            return true;
+                        }
+                    });
+                } else {
+                    cardView.setClickable(false);
+                    cardView.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View view, MotionEvent event) {
+                            mHanabiAPI.message(1, mName, "Hi Tim!!!!", new Callback<GameResponse>() {
+                                @Override
+                                public void success(GameResponse aBoolean, Response response) {
+                                    Log.d(TAG, "message success:" + aBoolean);
+                                }
 
-                holder.cardContainer.addView(cardView);
+                                @Override
+                                public void failure(RetrofitError error) {
+                                    Log.e(TAG, "message error: " + error.getMessage());
+                                }
+                            });
+                            return false;
+                        }
+                    });
+                }
+                cardContainer.addView(cardView);
                 index++;
             }
-            return convertView;
+            return handView;
         }
     }
-
-    static class ViewHolder {
-        TextView name;
-        LinearLayout cardContainer;
-        View blinker;
-    }
-
 
     static class CardState {
         Card card;

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:paddingBottom="5dp"
+              android:paddingLeft="15dp"
+              android:paddingRight="15dp"
+              android:paddingTop="10dp"
+              tools:background="@drawable/table">
+
+    <FrameLayout
+        android:layout_width="40dp"
+        android:layout_height="40dp">
+
+        <TextView
+            android:id="@+id/chat_initials"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="0dp"
+            android:background="@drawable/circle"
+            android:gravity="center"
+            android:padding="1dp"
+            android:text="Cu"
+            android:textColor="@color/pastel_white"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/chat_announcement"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="0dp"
+            android:background="@drawable/circle"
+            android:gravity="center"
+            android:padding="10dp"
+            android:src="@android:drawable/stat_notify_chat"/>
+
+    </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/chat_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:maxWidth="250dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
+        android:text="Lost a life by misplaying: "
+        android:textColor="@color/pastel_white"
+        android:textSize="14sp"/>
+
+    <com.ckroetsch.hanabi.view.CardView
+        android:id="@+id/chat_game_card"
+        android:layout_width="21dp"
+        android:layout_height="28dp"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/carbon"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        tools:background="@color/pastel_yellow"
+        tools:text="3"/>
+
+</LinearLayout>

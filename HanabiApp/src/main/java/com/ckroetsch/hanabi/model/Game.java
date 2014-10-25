@@ -17,9 +17,6 @@ public final class Game {
     @JsonProperty("numCardsRemaining")
     int mCardsRemaining;
 
-    @JsonProperty("numPlayers")
-    int mNumPlayers;
-
     @JsonProperty("isRainbow")
     boolean mIsRainbow;
 
@@ -32,8 +29,11 @@ public final class Game {
     @JsonProperty("players")
     List<Player> mPlayers;
 
+    @JsonProperty("spectators")
+    List<Spectator> mSpectators;
+
     @JsonProperty("played")
-    List<Card> mState;
+    List<Card> mPlayed;
 
     @JsonProperty("discarded")
     List<Card> mDiscarded;
@@ -46,6 +46,9 @@ public final class Game {
 
     @JsonProperty("hasStarted")
     boolean mHasStarted;
+
+    @JsonProperty("state")
+    Object object;
 
     private Game() {
 
@@ -63,73 +66,32 @@ public final class Game {
         return mCardsRemaining;
     }
 
-    public void setCardsRemaining(int n) {
-        mCardsRemaining = n;
-    }
-
     public int getNumPlayers() {
-        return mNumPlayers;
-    }
-
-    public void setNumPlayers(int numPlayers) {
-        mNumPlayers = numPlayers;
+        return mPlayers.size();
     }
 
     public boolean isRainbow() {
         return mIsRainbow;
     }
 
-    public void setRainbow(boolean value) {
-        mIsRainbow = value;
-    }
-
     public int getHints() {
         return mHints;
-    }
-
-    public void setHints(int hints) {
-        mHints = hints;
     }
 
     public int getLives() {
         return mLives;
     }
 
-    public void setLives(int i) {
-        mLives = i;
-    }
-
     public List<Player> getPlayers() {
         return mPlayers;
     }
 
-    public void setHasStarted(boolean mHasStarted) {
-        this.mHasStarted = mHasStarted;
+    public List<Spectator> getSpectators() {
+        return mSpectators;
     }
 
-    public void setHasEnded(boolean mHasEnded) {
-        this.mHasEnded = mHasEnded;
-    }
-
-    public void setCurrentPlayer(String mCurrentPlayer) {
-        this.mCurrentPlayer = mCurrentPlayer;
-    }
-
-    public void setDiscarded(List<Card> mDiscarded) {
-        this.mDiscarded = mDiscarded;
-    }
-
-    public void setState(List<Card> mState) {
-        this.mState = mState;
-    }
-
-    public void setPlayers(List<Player> players) {
-        mPlayers = players;
-
-    }
-
-    public List<Card> getState() {
-        return mState;
+    public List<Card> getPlayed() {
+        return mPlayed;
     }
 
     public List<Card> getDiscarded() {
