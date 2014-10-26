@@ -9,7 +9,7 @@ import java.util.Map;
  * @author curtiskroetsch
  */
 public enum SocketEvent {
-    CREATE_GAME("createGame", CreateGameEvent.class),
+    CREATE_GAME("createGame", null),
     ENTER_GAME("enterGame", EnterGameEvent.class),
     RESUME_GAME("resumeGame", ResumeGameEvent.class),
     JOIN_GAME("joinGame", JoinGameEvent.class),

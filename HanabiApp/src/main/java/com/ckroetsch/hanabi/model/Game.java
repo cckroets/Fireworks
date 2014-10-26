@@ -1,8 +1,5 @@
 package com.ckroetsch.hanabi.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 /**
@@ -30,23 +27,19 @@ public final class Game {
         return id;
     }
 
-    public int getCardsRemaining() {
+    public int getNumCardsRemaining() {
         return numCardsRemaining;
     }
 
-    public int getNumPlayers() {
-        return players.size();
-    }
-
-    public boolean isRainbow() {
+    public boolean getIsRainbow() {
         return isRainbow;
     }
 
-    public int getHints() {
+    public int getNumHints() {
         return numHints;
     }
 
-    public int getLives() {
+    public int getNumLives() {
         return numLives;
     }
 
@@ -66,15 +59,15 @@ public final class Game {
         return discarded;
     }
 
-    public String getCurrentPlayerName() {
+    public String getCurrentPlayer() {
         return currentPlayer;
     }
 
-            public boolean hasEnded() {
+    public boolean getHasEnded() {
         return hasEnded;
     }
 
-    public boolean hasStarted() {
+    public boolean getHasStarted() {
         return hasStarted;
     }
 }

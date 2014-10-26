@@ -10,35 +10,33 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public final class Card implements Parcelable {
 
-    @JsonProperty("suit")
-    Suit mSuit;
+    Suit suit;
 
-    @JsonProperty("number")
-    int mValue;
+    Integer number;
 
     private Card() {
 
     }
 
     private Card(Parcel parcel) {
-        mSuit = Suit.valueOf(parcel.readString());
-        mValue = parcel.readInt();
+        suit = Suit.valueOf(parcel.readString());
+        number = parcel.readInt();
     }
 
     public Suit getSuit() {
-        return mSuit;
+        return suit;
     }
 
     public int getValue() {
-        return mValue;
+        return number;
     }
 
     public void setSuit(Suit mSuit) {
-        this.mSuit = mSuit;
+        this.suit = mSuit;
     }
 
     public void setValue(int mValue) {
-        this.mValue = mValue;
+        this.number = mValue;
     }
 
     @Override
@@ -48,7 +46,7 @@ public final class Card implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(mSuit.name());
-        parcel.writeInt(mValue);
+        parcel.writeString(suit.name());
+        parcel.writeInt(number);
     }
 }

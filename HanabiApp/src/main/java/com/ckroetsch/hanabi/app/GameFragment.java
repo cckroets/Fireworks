@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -19,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ckroetsch.hanabi.R;
-import com.ckroetsch.hanabi.events.game.CardDiscardedEvent;
+import com.ckroetsch.hanabi.events.BusSingleton;
 import com.ckroetsch.hanabi.events.socket.DiscardEvent;
 import com.ckroetsch.hanabi.events.socket.HanabiErrorEvent;
 import com.ckroetsch.hanabi.events.socket.JoinGameEvent;
@@ -28,23 +29,16 @@ import com.ckroetsch.hanabi.events.socket.SocketEvent;
 import com.ckroetsch.hanabi.events.socket.StartGameEvent;
 import com.ckroetsch.hanabi.model.Card;
 import com.ckroetsch.hanabi.model.Game;
-import com.ckroetsch.hanabi.model.GameResponse;
 import com.ckroetsch.hanabi.model.Player;
 import com.ckroetsch.hanabi.network.HanabiError;
 import com.ckroetsch.hanabi.network.HanabiFrontEndAPI;
-import com.ckroetsch.hanabi.network.HanabiRetrofitFrontEndAPI;
-import com.ckroetsch.hanabi.network.HanabiSocketIO;
 import com.ckroetsch.hanabi.util.JsonUtil;
 import com.ckroetsch.hanabi.view.CardView;
-import com.ckroetsch.hanabi.view.FakeListView;
 import com.google.inject.Inject;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
@@ -85,7 +79,6 @@ public class GameFragment extends RoboFragment {
 
     Handler mHandler = new Handler();
 
-
     public static GameFragment createInstance(Bundle args) {
         final GameFragment fragment = new GameFragment();
         fragment.setArguments(args);
@@ -96,9 +89,8 @@ public class GameFragment extends RoboFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final String gameJSON = getArguments().getString(KEY_GAME);
+        BusSingleton.get().register(this);
         mName = getArguments().getString(KEY_NAME);
-        HanabiSocketIO socketIo = new HanabiSocketIO();
-        socketIo.connect();
         Log.d(TAG, "gameJSON = " + gameJSON);
         final Game game = JsonUtil.jsonToObject(gameJSON, Game.class);
         Log.d(TAG, "gameJSON = " + game);
@@ -117,22 +109,20 @@ public class GameFragment extends RoboFragment {
     }
 
     @Subscribe
-    private void onJoin(JoinGameEvent event) {
-        Log.e(TAG, "join success");
+    public void onJoin(JoinGameEvent event) {
+        Log.d(TAG, "join success");
         mJoinButton.setVisibility(View.INVISIBLE);
         mStartButton.setVisibility(View.VISIBLE);
         mGame = event.game;
         bindGame(mGame);
     }
 
-    private void onJoinFailed(HanabiError error) {
-        Log.e(TAG, "join error: " + error.getReason());
-        Toast.makeText(getActivity(), error.getReason(), Toast.LENGTH_SHORT).show();
+    private void onJoinFailed() {
         mJoinButton.setVisibility(View.GONE);
     }
 
     @Subscribe
-    private void onStart(StartGameEvent event) {
+    public void onStart(StartGameEvent event) {
         Log.e(TAG, "start success");
         mStartButton.setVisibility(View.GONE);
         Toast.makeText(getActivity(), "Started", Toast.LENGTH_SHORT).show();
@@ -140,13 +130,8 @@ public class GameFragment extends RoboFragment {
         bindGame(mGame);
     }
 
-    private void onStartFailed(HanabiError error) {
-        Log.e(TAG, "start error: " + error.getReason());
-        Toast.makeText(getActivity(), error.getReason(), Toast.LENGTH_SHORT).show();
-    }
-
     @Subscribe
-    private void onDiscard(DiscardEvent event) {
+    public void onDiscard(DiscardEvent event) {
         Log.d(TAG, "successfully discarded " + event.cardIndex);
         Toast.makeText(getActivity(), "Discarded: " + event.cardIndex, Toast.LENGTH_SHORT).show();
         mGame = event.game;
@@ -154,22 +139,17 @@ public class GameFragment extends RoboFragment {
     }
 
     @Subscribe
-    private void onPlay(PlayCardEvent event) {
+    public void onPlay(PlayCardEvent event) {
         Log.d(TAG, "successfully played " + event.cardIndex);
         Toast.makeText(getActivity(), "Played: " + event.cardIndex, Toast.LENGTH_SHORT).show();
         mGame = event.game;
         bindGame(mGame);
     }
 
-    private void onPlayFailed(HanabiError error) {
-        Log.e(TAG, "play or discard error: " + error.getReason());
-        Toast.makeText(getActivity(), error.getReason(), Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (mGame.hasStarted()) {
+        if (mGame.getHasStarted()) {
             mJoinButton.setVisibility(View.GONE);
             mStartButton.setVisibility(View.GONE);
         }
@@ -250,6 +230,13 @@ public class GameFragment extends RoboFragment {
         Log.i(TAG, "onStop()");
     }
 
+    @Override
+    public void onDestroy() {
+        BusSingleton.get().unregister(this);
+        Log.i(TAG, "onDestroy()");
+        super.onDestroy();
+    }
+
     private void bindGame(Game game) {
         bindBoard(game);
         Log.d(TAG, "mPlayers: " + mPlayers);
@@ -265,6 +252,12 @@ public class GameFragment extends RoboFragment {
 
     private void bindCard(Card card) {
         final CardView cardView = (CardView) mInflater.inflate(R.layout.view_card, mBoard, false);
+        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        llp.width = (int) convertDpToPixel(30f);
+        llp.height = (int) convertDpToPixel(40f);
+        final int margin = (int) convertDpToPixel(5f);
+        llp.setMargins(margin, margin, margin, margin);
+        cardView.setLayoutParams(llp);
         cardView.bindWithCard(card);
         mBoard.addView(cardView);
     }
@@ -273,20 +266,20 @@ public class GameFragment extends RoboFragment {
         return dp * getActivity().getResources().getDisplayMetrics().density;
     }
 
-    class PlayersAdapter extends FakeListView.FakeListAdapter<Player> {
+    class PlayersAdapter extends ArrayAdapter<Player> {
 
         final LayoutInflater mInflater;
 
         public PlayersAdapter(Context context, List<Player> players) {
-            super(context, players);
+            super(context, 0, players);
             mInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
 
         @Override
-        public View getView(int position, final Player player) {
-
-            final View handView = mInflater.inflate(R.layout.view_hand, null);
+        public View getView(int position, final View convertView, final ViewGroup parent) {
+            final Player player = getItem(position);
+            final View handView = mInflater.inflate(R.layout.view_hand, parent, false);
             final TextView nameView = (TextView) handView.findViewById(R.id.hand_name);
             final LinearLayout cardContainer = (LinearLayout) handView.findViewById(R.id.hand_container);
             final View blinker = handView.findViewById(R.id.blinker);
@@ -294,7 +287,7 @@ public class GameFragment extends RoboFragment {
             nameView.setText(player.getName());
             cardContainer.removeAllViews();
             boolean isMe = player.getName().equals(mName);
-            if (player.getName().equals(mGame.getCurrentPlayerName())) {
+            if (player.getName().equals(mGame.getCurrentPlayer())) {
                 blinker.setAlpha(0f);
                 blinker.setVisibility(View.VISIBLE);
                 ObjectAnimator animator = ObjectAnimator.ofFloat(blinker, View.ALPHA, 0.05f);
@@ -356,27 +349,23 @@ public class GameFragment extends RoboFragment {
     }
 
     @Subscribe
-    void onFailure(HanabiErrorEvent event) {
-        SocketEvent socketEvent = SocketEvent.getEvent(event.getError().getEvent());
-        String eventString = event.getError().getEvent();
-        Log.e(TAG, "onFailure() " + eventString + " : " + event.getError().getReason());
+    public void onFailure(HanabiErrorEvent event) {
+        final HanabiError error = event.getError();
+        final String eventString = event.getError().getEvent();
+        final SocketEvent socketEvent = SocketEvent.getEvent(eventString);
         if (socketEvent == null) {
             Log.e(TAG, "Unknown error event : " + eventString);
             return;
         }
+        Log.e(TAG, error.getEvent() + ":" + error.getReason());
         switch (socketEvent) {
             case JOIN_GAME:
-                onJoinFailed(event.getError());
+                onJoinFailed();
                 break;
-            case START_GAME:
-                onStartFailed(event.getError());
-                break;
-            case PLAY_CARD:
-            case DISCARD_CARD:
-                onPlayFailed(event.getError());
             default:
                 break;
         }
+        Toast.makeText(getActivity(), error.getReason(), Toast.LENGTH_SHORT).show();
     }
 
     static class CardState {

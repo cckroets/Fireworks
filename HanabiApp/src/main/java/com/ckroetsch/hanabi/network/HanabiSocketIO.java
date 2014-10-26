@@ -1,5 +1,7 @@
 package com.ckroetsch.hanabi.network;
 
+import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 
 
@@ -37,12 +39,21 @@ public final class HanabiSocketIO implements HanabiSocket, JSONCallback {
 
     Bus mBus = BusSingleton.get();
 
+    boolean mConnectRequested;
+
+    final Handler mHandler;
+
     @Inject
-    public HanabiSocketIO() {
+    public HanabiSocketIO(Context context) {
+        mHandler = new Handler(context.getMainLooper());
     }
 
     @Override
     public void connect() {
+        if (mConnectRequested) {
+            return;
+        }
+        mConnectRequested = true;
         SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), Constants.SOCKET_URL, new ConnectCallback() {
             @Override
             public void onConnectCompleted(Exception ex, SocketIOClient client) {
@@ -94,6 +105,11 @@ public final class HanabiSocketIO implements HanabiSocket, JSONCallback {
             return;
         }
         final Object event = JsonUtil.getChild(json, KEY_PAYLOAD, socketEvent.getEventClass());
-        mBus.post(event);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mBus.post(event);
+            }
+        });
     }
 }

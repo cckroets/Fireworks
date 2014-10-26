@@ -12,15 +12,17 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.ckroetsch.hanabi.R;
-import com.ckroetsch.hanabi.model.Game;
-import com.ckroetsch.hanabi.model.GameResponse;
-import com.ckroetsch.hanabi.network.HanabiRetrofitFrontEndAPI;
+import com.ckroetsch.hanabi.events.BusSingleton;
+import com.ckroetsch.hanabi.events.socket.EnterGameEvent;
+import com.ckroetsch.hanabi.events.socket.HanabiErrorEvent;
+import com.ckroetsch.hanabi.events.socket.ResumeGameEvent;
+import com.ckroetsch.hanabi.events.socket.SocketEvent;
+import com.ckroetsch.hanabi.network.HanabiError;
+import com.ckroetsch.hanabi.network.HanabiFrontEndAPI;
 import com.ckroetsch.hanabi.network.HanabiSocketIO;
 import com.google.inject.Inject;
+import com.squareup.otto.Subscribe;
 
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
@@ -39,15 +41,20 @@ public class StartFragment extends RoboFragment implements
     @InjectView(R.id.start_enter_button)
     Button mEnterButton;
 
-    @Inject
-    HanabiRetrofitFrontEndAPI mHanabiAPI;
+    @InjectView(R.id.start_resume_button)
+    Button mResumeButton;
 
     @Inject
-    HanabiSocketIO mHanabiSocket;
+    HanabiFrontEndAPI mHanabiAPI;
+
+    DialogInterface mDialogInterface;
+
+    boolean mResume;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BusSingleton.get().register(this);
     }
 
     @Override
@@ -61,12 +68,20 @@ public class StartFragment extends RoboFragment implements
         mCreateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mHanabiSocket.connect();
+                showCreateDialog();
             }
         });
         mEnterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mResume = false;
+                showEnterDialog();
+            }
+        });
+        mResumeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mResume = true;
                 showEnterDialog();
             }
         });
@@ -82,54 +97,69 @@ public class StartFragment extends RoboFragment implements
         enterDialog.show(getActivity().getSupportFragmentManager(), "enter");
     }
 
+    @Subscribe
+    public void onGameEnter(EnterGameEvent event) {
+        Log.d(TAG, "Enter success: " + event.game.getId());
+        ((MainActivity) getActivity()).openGameFragment(event.game, event.name);
+    }
+
+    private void onGameEnterFailed() {
+        if (mDialogInterface != null) {
+            mDialogInterface.dismiss();
+        }
+    }
+
+    @Subscribe
+    public void onGameResume(ResumeGameEvent event) {
+        Log.d(TAG, "Resume success: " + event.game.getId());
+        ((MainActivity) getActivity()).openGameFragment(event.game, event.name);
+    }
+
     @Override
     public void onGameCreate(final String name, boolean rainbow, DialogInterface dialogInterface) {
-        Log.d(TAG, "CREATED: name = " + name + " rainbow = " + rainbow);
-        mHanabiAPI.create(name, rainbow, new Callback<Game>() {
-            @Override
-            public void success(Game game, Response response) {
-                Log.d(TAG, "Game create() : id = " + game.getId());
-                ((MainActivity) getActivity()).openGameFragment(game, name);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.e(TAG, "error: " + error.getMessage());
-            }
-        });
+        mDialogInterface = dialogInterface;
+        mHanabiAPI.createGame(name, rainbow);
     }
 
     @Override
     public void onGameEnter(int id, final String name, final DialogInterface dialogInterface) {
+        mDialogInterface = dialogInterface;
         Log.d(TAG, "ENTERED: id = " + id + " name = " + name);
         if (TextUtils.isEmpty(name)) {
             Toast.makeText(getActivity(), "Name must not be empty.", Toast.LENGTH_SHORT).show();
             return;
         }
-        mHanabiAPI.enter(id, name, new Callback<GameResponse>() {
-            @Override
-            public void success(GameResponse response, Response networkResponse) {
-                if (true) { //response.isSuccess()) {
-                    Log.d(TAG, "Enter success: " + response.getGame().getLives());
-                    ((MainActivity) getActivity()).openGameFragment(response.getGame(), name);
-
-                } else {
-                    Log.d(TAG, "Enter failed");
-                    dialogInterface.dismiss();
-                    Toast.makeText(getActivity(), "Could not enter game.", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.d(TAG, "Enter error: " + error.getMessage());
-            }
-        });
+        if (mResume) {
+            mHanabiAPI.resumeGame(name, id);
+        } else {
+            mHanabiAPI.enterGame(name, id);
+        }
     }
 
     @Override
     public void onCancel(DialogInterface dialogInterface) {
         Log.d(TAG, "CANCELLED");
         dialogInterface.dismiss();
+    }
+
+    @Subscribe
+    public void onFailure(HanabiErrorEvent event) {
+        final HanabiError error = event.getError();
+        final String eventString = event.getError().getEvent();
+        final SocketEvent socketEvent = SocketEvent.getEvent(eventString);
+        if (socketEvent == null) {
+            Log.e(TAG, "Unknown error event : " + eventString);
+            return;
+        } else if (socketEvent == SocketEvent.ENTER_GAME) {
+            onGameEnterFailed();
+        }
+        Log.e(TAG, error.getEvent() + ":" + error.getReason());
+        Toast.makeText(getActivity(), error.getReason(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDestroy() {
+        BusSingleton.get().unregister(this);
+        super.onDestroy();
     }
 }

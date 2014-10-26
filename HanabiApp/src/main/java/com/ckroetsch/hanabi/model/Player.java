@@ -13,36 +13,32 @@ import java.util.List;
  */
 public final class Player implements Parcelable {
 
-    @JsonProperty("name")
-    String mName;
-
-    @JsonProperty("hand")
-    List<Card> mHand;
+    String name;
+    List<Card> hand;
 
     private Player() {
-
     }
 
     private Player(Parcel parcel) {
-        mName = parcel.readString();
-        mHand = new ArrayList<Card>();
-        parcel.readList(mHand, null);
+        name = parcel.readString();
+        hand = new ArrayList<Card>();
+        parcel.readList(hand, null);
     }
 
     public String getName() {
-        return mName;
+        return name;
     }
 
     public List<Card> getHand() {
-        return mHand;
+        return hand;
     }
 
     public void setName(String mName) {
-        this.mName = mName;
+        this.name = mName;
     }
 
     public void setHand(List<Card> mHand) {
-        this.mHand = mHand;
+        this.hand = mHand;
     }
 
     @Override
@@ -52,7 +48,7 @@ public final class Player implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(mName);
-        parcel.writeList(mHand);
+        parcel.writeString(name);
+        parcel.writeList(hand);
     }
 }

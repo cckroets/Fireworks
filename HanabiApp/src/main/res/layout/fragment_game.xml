@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="20dp" />
 
-
     <LinearLayout
         android:id="@+id/board_container"
         android:layout_width="match_parent"
@@ -31,11 +30,12 @@
         android:textColor="@android:color/white"
         android:text="It's Curtis's turn to play"/>
 
-    <com.ckroetsch.hanabi.view.FakeListView
+    <ListView
         android:id="@+id/players"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_weight="1"
+        android:layout_height="0dp"/>
 
     <FrameLayout
         android:layout_width="match_parent"
