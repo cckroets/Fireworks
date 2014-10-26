@@ -1,8 +1,5 @@
 package com.ckroetsch.hanabi.events.socket;
 
-import com.ckroetsch.hanabi.events.game.CardDiscardedEvent;
-import com.ckroetsch.hanabi.events.game.CardPlayedEvent;
-
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -18,8 +15,8 @@ public enum SocketEvent {
     JOIN_GAME("joinGame", JoinGameEvent.class),
     START_GAME("startGame", StartGameEvent.class),
     GIVE_HINT("giveHint", GiveHintEvent.class),
-    DISCARD_CARD("discardCard", CardDiscardedEvent.class),
-    PLAY_CARD("playCard", CardPlayedEvent.class),
+    DISCARD_CARD("discardCard", DiscardEvent.class),
+    PLAY_CARD("playCard", PlayCardEvent.class),
     END_GAME("endGame", EndGameEvent.class),
     SEND_MESSAGE("sendMessage", SendMessageEvent.class);
 

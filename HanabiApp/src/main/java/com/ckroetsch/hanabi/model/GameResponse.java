@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public final class GameResponse {
 
-    Boolean name;
+    String name;
     Game game;
     Integer cardIndex;
 
@@ -16,7 +16,7 @@ public final class GameResponse {
 
     }
 
-    public boolean getName() {
+    public String getName() {
         return name;
     }
 

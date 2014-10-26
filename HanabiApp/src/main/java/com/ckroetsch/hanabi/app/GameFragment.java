@@ -19,16 +19,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ckroetsch.hanabi.R;
+import com.ckroetsch.hanabi.events.game.CardDiscardedEvent;
+import com.ckroetsch.hanabi.events.socket.DiscardEvent;
+import com.ckroetsch.hanabi.events.socket.HanabiErrorEvent;
+import com.ckroetsch.hanabi.events.socket.JoinGameEvent;
+import com.ckroetsch.hanabi.events.socket.PlayCardEvent;
+import com.ckroetsch.hanabi.events.socket.SocketEvent;
+import com.ckroetsch.hanabi.events.socket.StartGameEvent;
 import com.ckroetsch.hanabi.model.Card;
 import com.ckroetsch.hanabi.model.Game;
 import com.ckroetsch.hanabi.model.GameResponse;
 import com.ckroetsch.hanabi.model.Player;
+import com.ckroetsch.hanabi.network.HanabiError;
+import com.ckroetsch.hanabi.network.HanabiFrontEndAPI;
 import com.ckroetsch.hanabi.network.HanabiRetrofitFrontEndAPI;
 import com.ckroetsch.hanabi.network.HanabiSocketIO;
 import com.ckroetsch.hanabi.util.JsonUtil;
 import com.ckroetsch.hanabi.view.CardView;
 import com.ckroetsch.hanabi.view.FakeListView;
 import com.google.inject.Inject;
+import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
@@ -67,7 +77,7 @@ public class GameFragment extends RoboFragment {
     LayoutInflater mInflater;
 
     @Inject
-    HanabiRetrofitFrontEndAPI mHanabiAPI;
+    HanabiFrontEndAPI mHanabiAPI;
 
     Game mGame;
 
@@ -94,16 +104,66 @@ public class GameFragment extends RoboFragment {
         Log.d(TAG, "gameJSON = " + game);
         mGame = game;
         mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    bindGame(mGame);
-                }
-            });
+            @Override
+            public void run() {
+                bindGame(mGame);
+            }
+        });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_game, container, false);
+    }
+
+    @Subscribe
+    private void onJoin(JoinGameEvent event) {
+        Log.e(TAG, "join success");
+        mJoinButton.setVisibility(View.INVISIBLE);
+        mStartButton.setVisibility(View.VISIBLE);
+        mGame = event.game;
+        bindGame(mGame);
+    }
+
+    private void onJoinFailed(HanabiError error) {
+        Log.e(TAG, "join error: " + error.getReason());
+        Toast.makeText(getActivity(), error.getReason(), Toast.LENGTH_SHORT).show();
+        mJoinButton.setVisibility(View.GONE);
+    }
+
+    @Subscribe
+    private void onStart(StartGameEvent event) {
+        Log.e(TAG, "start success");
+        mStartButton.setVisibility(View.GONE);
+        Toast.makeText(getActivity(), "Started", Toast.LENGTH_SHORT).show();
+        mGame = event.game;
+        bindGame(mGame);
+    }
+
+    private void onStartFailed(HanabiError error) {
+        Log.e(TAG, "start error: " + error.getReason());
+        Toast.makeText(getActivity(), error.getReason(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Subscribe
+    private void onDiscard(DiscardEvent event) {
+        Log.d(TAG, "successfully discarded " + event.cardIndex);
+        Toast.makeText(getActivity(), "Discarded: " + event.cardIndex, Toast.LENGTH_SHORT).show();
+        mGame = event.game;
+        bindGame(mGame);
+    }
+
+    @Subscribe
+    private void onPlay(PlayCardEvent event) {
+        Log.d(TAG, "successfully played " + event.cardIndex);
+        Toast.makeText(getActivity(), "Played: " + event.cardIndex, Toast.LENGTH_SHORT).show();
+        mGame = event.game;
+        bindGame(mGame);
+    }
+
+    private void onPlayFailed(HanabiError error) {
+        Log.e(TAG, "play or discard error: " + error.getReason());
+        Toast.makeText(getActivity(), error.getReason(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -116,52 +176,13 @@ public class GameFragment extends RoboFragment {
         mJoinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mHanabiAPI.join(mGame.getId(), mName, new Callback<GameResponse>() {
-                    @Override
-                    public void success(GameResponse gameResponse, Response response) {
-                        if (false) { //gameResponse.isSuccess()) {
-                            mJoinButton.setVisibility(View.INVISIBLE);
-                            mStartButton.setVisibility(View.VISIBLE);
-                            mGame = gameResponse.getGame();
-                            bindGame(mGame);
-                        } else {
-                            Log.e(TAG, "join failed.");
-                            Toast.makeText(getActivity(), "Could not join game", Toast.LENGTH_SHORT).show();
-                            mJoinButton.setVisibility(View.GONE);
-                        }
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Log.e(TAG, "join error: " + error.getMessage());
-                        Toast.makeText(getActivity(), "Could not join game", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                mHanabiAPI.joinGame(mName, mGame.getId());
             }
         });
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mHanabiAPI.start(mGame.getId(), new Callback<GameResponse>() {
-                    @Override
-                    public void success(GameResponse gameResponse, Response response) {
-                        if (false) { //gameResponse.isSuccess()) {
-                            Log.e(TAG, "start success");
-                            mGame = gameResponse.getGame();
-                            bindGame(mGame);
-                            mStartButton.setVisibility(View.GONE);
-                        } else {
-                            Log.e(TAG, "start failed");
-                            Toast.makeText(getActivity(), "Could not start game", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Log.e(TAG, "start error: " + error.getMessage());
-                        Toast.makeText(getActivity(), "Could not start game", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                mHanabiAPI.startGame(mGame.getId());
             }
         });
         mDiscard.setOnDragListener(new View.OnDragListener() {
@@ -176,26 +197,7 @@ public class GameFragment extends RoboFragment {
                     final CharSequence indexString = dragEvent.getClipData().getItemAt(0).coerceToText(getActivity());
                     final int index = Integer.parseInt(indexString.toString());
                     Log.d(TAG, "discarding " + index);
-                    mHanabiAPI.discard(mGame.getId(), mName, index, new Callback<GameResponse>() {
-                        @Override
-                        public void success(GameResponse gameResponse, Response response) {
-                            if (true) { // gameResponse.isSuccess()) {
-                                mGame = gameResponse.getGame();
-                                bindGame(mGame);
-                                Log.d(TAG, "successfully discarded " + index);
-                                Toast.makeText(getActivity(), "Discarded: " + index, Toast.LENGTH_SHORT).show();
-                            } else {
-                                failure(null);
-                            }
-
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            Log.d(TAG, "failed to discard " + index + " error = " + error.getMessage());
-                            Toast.makeText(getActivity(), "Failed to discard: " + index, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    mHanabiAPI.discardCard(mName, mGame.getId(), index);
                     return true;
                 } else if (dragEvent.getAction() == DragEvent.ACTION_DRAG_ENDED) {
                     view.animate().translationY(200f).alpha(0f).start();
@@ -213,26 +215,7 @@ public class GameFragment extends RoboFragment {
                     final CharSequence indexString = dragEvent.getClipData().getItemAt(0).coerceToText(getActivity());
                     final int index = Integer.parseInt(indexString.toString());
                     Log.d(TAG, "playing " + index);
-                    mHanabiAPI.play(mGame.getId(), mName, index, new Callback<GameResponse>() {
-                        @Override
-                        public void success(GameResponse gameResponse, Response response) {
-                            if (true) { // gameResponse.isSuccess()) {
-                                mGame = gameResponse.getGame();
-                                bindGame(mGame);
-                                Log.d(TAG, "successfully played " + index);
-                                Toast.makeText(getActivity(), "Played: " + index, Toast.LENGTH_SHORT).show();
-                            } else {
-                                failure(null);
-                            }
-
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            Log.d(TAG, "failed to play " + index + " error = " + error.getMessage());
-                            Toast.makeText(getActivity(), "Failed to play: " + index, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    mHanabiAPI.playCard(mName, mGame.getId(), index);
                     return true;
                 } else if (dragEvent.getAction() == DragEvent.ACTION_DRAG_ENDED) {
                     return true;
@@ -286,7 +269,7 @@ public class GameFragment extends RoboFragment {
         mBoard.addView(cardView);
     }
 
-    public float convertDpToPixel(float dp){
+    public float convertDpToPixel(float dp) {
         return dp * getActivity().getResources().getDisplayMetrics().density;
     }
 
@@ -304,7 +287,7 @@ public class GameFragment extends RoboFragment {
         public View getView(int position, final Player player) {
 
             final View handView = mInflater.inflate(R.layout.view_hand, null);
-            final TextView nameView =  (TextView) handView.findViewById(R.id.hand_name);
+            final TextView nameView = (TextView) handView.findViewById(R.id.hand_name);
             final LinearLayout cardContainer = (LinearLayout) handView.findViewById(R.id.hand_container);
             final View blinker = handView.findViewById(R.id.blinker);
 
@@ -364,28 +347,35 @@ public class GameFragment extends RoboFragment {
                     });
                 } else {
                     cardView.setClickable(false);
-                    cardView.setOnTouchListener(new View.OnTouchListener() {
-                        @Override
-                        public boolean onTouch(View view, MotionEvent event) {
-                            mHanabiAPI.message(1, mName, "Hi Tim!!!!", new Callback<GameResponse>() {
-                                @Override
-                                public void success(GameResponse aBoolean, Response response) {
-                                    Log.d(TAG, "message success:" + aBoolean);
-                                }
-
-                                @Override
-                                public void failure(RetrofitError error) {
-                                    Log.e(TAG, "message error: " + error.getMessage());
-                                }
-                            });
-                            return false;
-                        }
-                    });
                 }
                 cardContainer.addView(cardView);
                 index++;
             }
             return handView;
+        }
+    }
+
+    @Subscribe
+    void onFailure(HanabiErrorEvent event) {
+        SocketEvent socketEvent = SocketEvent.getEvent(event.getError().getEvent());
+        String eventString = event.getError().getEvent();
+        Log.e(TAG, "onFailure() " + eventString + " : " + event.getError().getReason());
+        if (socketEvent == null) {
+            Log.e(TAG, "Unknown error event : " + eventString);
+            return;
+        }
+        switch (socketEvent) {
+            case JOIN_GAME:
+                onJoinFailed(event.getError());
+                break;
+            case START_GAME:
+                onStartFailed(event.getError());
+                break;
+            case PLAY_CARD:
+            case DISCARD_CARD:
+                onPlayFailed(event.getError());
+            default:
+                break;
         }
     }
 

@@ -16,6 +16,8 @@ import com.ckroetsch.hanabi.R;
 import com.ckroetsch.hanabi.model.Game;
 import com.ckroetsch.hanabi.util.JsonUtil;
 
+import org.json.JSONObject;
+
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
@@ -36,9 +38,9 @@ public class TabbedHanabiFragment extends RoboFragment {
 
     public static TabbedHanabiFragment createInstance(Game game, String name) {
         final TabbedHanabiFragment fragment = new TabbedHanabiFragment();
-        final String gameJSON = JsonUtil.objectToJson(game);
+        final JSONObject gameJSON = JsonUtil.objectToJson(game);
         final Bundle args = new Bundle();
-        args.putString(KEY_GAME, gameJSON);
+        args.putString(KEY_GAME, gameJSON.toString());
         args.putString(KEY_NAME, name);
         args.putInt(KEY_GAME_ID, game.getId());
         fragment.setArguments(args);
