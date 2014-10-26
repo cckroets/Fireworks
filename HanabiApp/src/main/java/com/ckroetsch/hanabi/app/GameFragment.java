@@ -132,16 +132,16 @@ public class GameFragment extends RoboFragment {
 
     @Subscribe
     public void onDiscard(DiscardEvent event) {
-        Log.d(TAG, "successfully discarded " + event.cardIndex);
-        Toast.makeText(getActivity(), "Discarded: " + event.cardIndex, Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "successfully discarded " + event.card);
+        Toast.makeText(getActivity(), "Discarded: " + event.card, Toast.LENGTH_SHORT).show();
         mGame = event.game;
         bindGame(mGame);
     }
 
     @Subscribe
     public void onPlay(PlayCardEvent event) {
-        Log.d(TAG, "successfully played " + event.cardIndex);
-        Toast.makeText(getActivity(), "Played: " + event.cardIndex, Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "successfully played " + event.card);
+        Toast.makeText(getActivity(), "Played: " + event.card, Toast.LENGTH_SHORT).show();
         mGame = event.game;
         bindGame(mGame);
     }

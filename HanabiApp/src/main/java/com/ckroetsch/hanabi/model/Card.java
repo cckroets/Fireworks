@@ -49,4 +49,9 @@ public final class Card implements Parcelable {
         parcel.writeString(suit.name());
         parcel.writeInt(number);
     }
+
+    @Override
+    public String toString() {
+        return String.format("Card %d, %s", number, suit);
+    }
 }

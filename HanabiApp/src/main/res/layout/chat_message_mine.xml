@@ -1,50 +1,49 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:gravity="end"
               android:orientation="horizontal"
-              android:paddingBottom="5dp"
+              android:paddingTop="10dp"
               android:paddingLeft="15dp"
               android:paddingRight="15dp"
-
-              android:paddingTop="10dp"
-              tools:background="@drawable/table">
-
-    <TextView
-        android:id="@+id/chat_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:background="@color/pastel_violet"
-        android:gravity="center_vertical"
-        android:maxWidth="250dp"
-        android:padding="8dp"
-        android:text="hello"
-        android:textColor="@color/pastel_white"
-        android:textSize="14sp"/>
-
+              android:paddingBottom="5dp"
+              android:gravity="right"
+              tools:background="@drawable/table"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
 
     <FrameLayout
-        android:layout_width="45dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="10dp">
+        android:layout_marginTop="0dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/chat_initials"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_margin="0dp"
-            android:background="@color/pastel_violet"
-            android:gravity="center"
-            android:padding="1dp"
-            android:text="Cu"
+            android:id="@+id/chat_message"
+            android:paddingLeft="15dp"
+            android:background="@drawable/chat_bubble_me_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingRight="20dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:maxWidth="250dp"
+            android:text="Played a yello 34444444\nyeah bro"
             android:textColor="@color/pastel_white"
-            android:textSize="30sp"
-            android:textStyle="bold"/>
-
+            android:textSize="14sp"/>
     </FrameLayout>
+
+    <TextView
+        android:id="@+id/chat_initials"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="0dp"
+        android:background="@drawable/circle"
+        android:gravity="center"
+        android:padding="1dp"
+        android:text="Cu"
+        android:textColor="@color/pastel_white"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
 </LinearLayout>

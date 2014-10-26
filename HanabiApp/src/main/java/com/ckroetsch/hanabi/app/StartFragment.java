@@ -147,14 +147,14 @@ public class StartFragment extends RoboFragment implements
         final HanabiError error = event.getError();
         final String eventString = event.getError().getEvent();
         final SocketEvent socketEvent = SocketEvent.getEvent(eventString);
+        Log.e(TAG, error.getEvent() + ":" + error.getReason());
+        Toast.makeText(getActivity(), error.getReason(), Toast.LENGTH_SHORT).show();
         if (socketEvent == null) {
             Log.e(TAG, "Unknown error event : " + eventString);
             return;
         } else if (socketEvent == SocketEvent.ENTER_GAME) {
             onGameEnterFailed();
         }
-        Log.e(TAG, error.getEvent() + ":" + error.getReason());
-        Toast.makeText(getActivity(), error.getReason(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

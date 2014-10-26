@@ -5,8 +5,6 @@ import com.ckroetsch.hanabi.model.Game;
 /**
  * @author curtiskroetsch
  */
-public class DiscardEvent {
-    public String name;
-    public Game game;
-    public Integer cardIndex;
+public class DiscardEvent extends CardEvent {
+
 }

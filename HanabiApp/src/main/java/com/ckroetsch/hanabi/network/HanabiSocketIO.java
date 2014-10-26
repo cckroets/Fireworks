@@ -46,6 +46,7 @@ public final class HanabiSocketIO implements HanabiSocket, JSONCallback {
     @Inject
     public HanabiSocketIO(Context context) {
         mHandler = new Handler(context.getMainLooper());
+        connect();
     }
 
     @Override
