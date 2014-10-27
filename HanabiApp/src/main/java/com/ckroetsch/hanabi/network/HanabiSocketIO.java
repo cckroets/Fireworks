@@ -14,7 +14,9 @@ import com.google.inject.Singleton;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.socketio.Acknowledge;
 import com.koushikdutta.async.http.socketio.ConnectCallback;
+import com.koushikdutta.async.http.socketio.DisconnectCallback;
 import com.koushikdutta.async.http.socketio.EventCallback;
+import com.koushikdutta.async.http.socketio.ExceptionCallback;
 import com.koushikdutta.async.http.socketio.JSONCallback;
 import com.koushikdutta.async.http.socketio.SocketIOClient;
 import com.koushikdutta.async.http.socketio.StringCallback;
@@ -27,7 +29,7 @@ import org.json.JSONObject;
  * @author curtiskroetsch
  */
 @Singleton
-public final class HanabiSocketIO implements HanabiSocket, JSONCallback {
+public final class HanabiSocketIO implements HanabiSocket, JSONCallback, DisconnectCallback, ExceptionCallback {
 
     static final String TAG = HanabiSocketIO.class.getName();
 
@@ -65,18 +67,8 @@ public final class HanabiSocketIO implements HanabiSocket, JSONCallback {
                 }
                 Log.d(TAG, "onConnectCompleted SUCCESS");
                 mSocket = client;
-                mSocket.setStringCallback(new StringCallback() {
-                    @Override
-                    public void onString(String string, Acknowledge acknowledge) {
-                        Log.d(TAG, "onString: " + string);
-                    }
-                });
-                mSocket.on("someEvent", new EventCallback() {
-                    @Override
-                    public void onEvent(JSONArray argument, Acknowledge acknowledge) {
-                        Log.d(TAG, "onEvent: " + argument.toString());
-                    }
-                });
+                mSocket.setExceptionCallback(HanabiSocketIO.this);
+                mSocket.setDisconnectCallback(HanabiSocketIO.this);
                 mSocket.setJSONCallback(HanabiSocketIO.this);
             }
         });
@@ -112,5 +104,15 @@ public final class HanabiSocketIO implements HanabiSocket, JSONCallback {
                 mBus.post(event);
             }
         });
+    }
+
+    @Override
+    public void onDisconnect(Exception e) {
+        Log.d(TAG, "onDisconnect: " + e.getMessage());
+    }
+
+    @Override
+    public void onException(Exception e) {
+        Log.d(TAG, "onException: " + e.getMessage());
     }
 }

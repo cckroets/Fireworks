@@ -31,13 +31,13 @@ public interface HanabiRetrofitFrontEndAPI {
     @FormUrlEncoded
     @POST(Constants.API_ENTER)
     void enter(@Path("id") int id,
-               @Field("name") String name,
+               @Field("from") String name,
                Callback<GameResponse> callback);
 
     @FormUrlEncoded
     @POST(Constants.API_JOIN)
     void join(@Path("id") int id,
-              @Field("name") String name,
+              @Field("from") String name,
               Callback<GameResponse> callback);
 
     @POST(Constants.API_START)
@@ -47,21 +47,21 @@ public interface HanabiRetrofitFrontEndAPI {
     @FormUrlEncoded
     @POST(Constants.API_PLAY)
     void play(@Path("id") int id,
-              @Field("name") String name,
+              @Field("from") String name,
               @Field("cardIndex") int index,
               Callback<GameResponse> callback);
 
     @FormUrlEncoded
     @POST(Constants.API_DISCARD)
     void discard(@Path("id") int id,
-                 @Field("name") String name,
+                 @Field("from") String name,
                  @Field("cardIndex") int index,
                  Callback<GameResponse> callback);
 
     @FormUrlEncoded
     @POST(Constants.API_HINT_COLOR)
     void giveColorHint(@Path("id") int id,
-                       @Field("name") String name,
+                       @Field("from") String name,
                        @Field("toName") String toName,
                        @Field("suit") Suit suit,
                        Callback<GameResponse> callback);
@@ -69,8 +69,8 @@ public interface HanabiRetrofitFrontEndAPI {
     @FormUrlEncoded
     @POST(Constants.API_HINT_NUMBER)
     void giveNumberHint(@Path("id") int id,
-                        @Field("name") String name,
-                        @Field("toName") String toName,
+                        @Field("from") String name,
+                        @Field("to") String toName,
                         @Field("number") int number,
                         Callback<GameResponse> callback);
 
@@ -82,7 +82,7 @@ public interface HanabiRetrofitFrontEndAPI {
     @FormUrlEncoded
     @POST(Constants.API_MESSAGE)
     void message(@Path("id") int id,
-                 @Field("name") String name,
+                 @Field("from") String name,
                  @Field("message") String message,
                  Callback<GameResponse> success);
 

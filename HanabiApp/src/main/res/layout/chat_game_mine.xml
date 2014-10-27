@@ -26,6 +26,7 @@
 
     <com.ckroetsch.hanabi.view.CardView
         android:id="@+id/chat_game_card"
+        android:visibility="gone"
         android:layout_width="21dp"
         android:layout_height="28dp"
         android:layout_marginRight="10dp"

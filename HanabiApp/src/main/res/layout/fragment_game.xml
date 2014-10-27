@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout
     android:id="@+id/root_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -8,87 +10,94 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="20dp" />
-
-    <LinearLayout
-        android:id="@+id/board_container"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_marginTop="8dp"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_gravity="center_horizontal"
-        android:fontFamily="sans-serif-regular"
-        android:textColor="@android:color/white"
-        android:text="It's Curtis's turn to play"/>
-
-    <ListView
-        android:id="@+id/players"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="0dp"/>
-
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="80dp">
 
         <Button
             android:id="@+id/button_join"
             android:layout_width="200dp"
-            android:layout_margin="8dp"
             android:layout_height="40dp"
-            android:layout_gravity="center_horizontal"
-            android:textColor="@android:color/white"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
             android:background="@drawable/button"
             android:fontFamily="sans-serif-light"
-            android:text="Join Game"/>
+            android:text="Join Game"
+            android:textColor="@android:color/white"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/button_start"
             android:layout_width="200dp"
-            android:layout_margin="8dp"
             android:layout_height="40dp"
-            android:layout_gravity="center_horizontal"
-            android:fontFamily="sans-serif-light"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
             android:background="@drawable/button"
+            android:fontFamily="sans-serif-light"
             android:text="Start Game"
-            android:visibility="invisible"/>
+            android:textColor="@android:color/white"
+            android:visibility="gone"/>
+
+        <include
+            android:id="@+id/board_container_parent"
+            layout="@layout/view_board" />
+
+        <LinearLayout
+            android:id="@+id/play_area"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:alpha="0"
+            tools:alpha="1">
+
+            <TextView
+                android:id="@+id/play_card"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/play_card_area"
+                android:gravity="center"
+                android:text="Play"
+                android:textColor="@color/pastel_white"
+                android:textSize="26sp"
+                android:fontFamily="sans-serif-bold"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:id="@+id/discard"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/discard_area"
+                android:gravity="center"
+                android:text="Discard"
+                android:fontFamily="sans-serif-bold"
+                android:textColor="@color/pastel_white"
+                android:textSize="26sp"/>
+
+        </LinearLayout>
 
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/discard"
-        android:translationY="200dp"
-        android:alpha="0"
-        android:orientation="vertical"
+    <TextView
+        android:id="@+id/game_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif-light"
+        android:text=" "
+        tools:text="Join the game to play"
+        android:textColor="@android:color/white"/>
+
+    <ListView
+        android:id="@+id/players"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#ff606060" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:text="Discard"
-            android:fontFamily="sans-serif-light"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:gravity="center"
-            android:layout_height="60dp"/>
-
-    </LinearLayout>
-
-
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:listitem="@layout/view_hand"/>
 
 </LinearLayout>

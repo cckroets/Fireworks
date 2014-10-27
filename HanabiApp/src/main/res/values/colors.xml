@@ -10,12 +10,21 @@
     <color name="pastel_yellow">#FFF467</color>
     <color name="pastel_green">#3BB878</color>
 
+    <color name="play_area">#663bb878</color>
+    <color name="dicard_area">#66f24441</color>
+
     <color name="pastel_violet">#A187BE</color>
     <color name="pastel_cyan">#6ECFF6</color>
     <color name="pastel_yellow_green">#A2D39C</color>
     <color name="pastel_yellow_orange">#FDC68A</color>
     <color name="pastel_magenta">#F49AC2</color>
 
+    <color name="black">@android:color/black</color>
+    <color name="grey">@android:color/darker_gray</color>
+
+    <color name="table_start">#ff373737</color>
+    <color name="table_center">#ff4b4b4b</color>
+    <color name="table_end">#ff252525</color>
 
     <color name="chat_spectator">#C2C2C2</color>
     <array name="chat_players">

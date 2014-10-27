@@ -3,9 +3,9 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@drawable/table"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:background="@drawable/table">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -85,5 +85,5 @@
         android:layout_height="wrap_content"
         android:alpha="0"
         android:background="@color/pastel_white"
-        android:visibility="invisible"/>
+        android:visibility="visible"/>
 </FrameLayout>

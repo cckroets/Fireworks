@@ -1,12 +1,16 @@
 package com.ckroetsch.hanabi.app;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.ClipData;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -55,6 +59,9 @@ public class GameFragment extends RoboFragment {
     @InjectView(R.id.players)
     ListView mPlayers;
 
+    @InjectView(R.id.board_container_parent)
+    View mBoardContainer;
+
     @InjectView(R.id.board_container)
     LinearLayout mBoard;
 
@@ -65,7 +72,19 @@ public class GameFragment extends RoboFragment {
     Button mStartButton;
 
     @InjectView(R.id.discard)
-    View mDiscard;
+    TextView mDiscard;
+
+    @InjectView(R.id.play_card)
+    TextView mPlayCard;
+
+    @InjectView(R.id.play_area)
+    View mPlayArea;
+
+    @InjectView(R.id.game_hints)
+    TextView mGameHints;
+
+    @InjectView(R.id.game_lives)
+    TextView mGameLives;
 
     @Inject
     LayoutInflater mInflater;
@@ -78,12 +97,6 @@ public class GameFragment extends RoboFragment {
     String mName;
 
     Handler mHandler = new Handler();
-
-    public static GameFragment createInstance(Bundle args) {
-        final GameFragment fragment = new GameFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -167,11 +180,11 @@ public class GameFragment extends RoboFragment {
         });
         mDiscard.setOnDragListener(new View.OnDragListener() {
             @Override
-            public boolean onDrag(View view, DragEvent dragEvent) {
+            public boolean onDrag(final View view, DragEvent dragEvent) {
                 if (dragEvent.getAction() == DragEvent.ACTION_DRAG_STARTED) {
-                    view.setTranslationY(200f);
-                    view.setAlpha(0f);
-                    view.animate().translationY(0f).alpha(1f).start();
+                    mPlayArea.setAlpha(0f);
+                    mPlayArea.animate().alpha(1f).start();
+                    mBoardContainer.animate().alpha(0.1f).start();
                     return true;
                 } else if (dragEvent.getAction() == DragEvent.ACTION_DROP) {
                     final CharSequence indexString = dragEvent.getClipData().getItemAt(0).coerceToText(getActivity());
@@ -179,14 +192,21 @@ public class GameFragment extends RoboFragment {
                     Log.d(TAG, "discarding " + index);
                     mHanabiAPI.discardCard(mName, mGame.getId(), index);
                     return true;
+                } else if (dragEvent.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
+                    mDiscard.setTextColor(getResources().getColor(R.color.pastel_red));
+                    return true;
+                } else if (dragEvent.getAction() == DragEvent.ACTION_DRAG_EXITED) {
+                    mDiscard.setTextColor(getResources().getColor(R.color.pastel_white));
+                    return true;
                 } else if (dragEvent.getAction() == DragEvent.ACTION_DRAG_ENDED) {
-                    view.animate().translationY(200f).alpha(0f).start();
+                    mPlayArea.animate().alpha(0f);
+                    mBoardContainer.animate().alpha(1f);
                     return true;
                 }
                 return true;
             }
         });
-        mBoard.setOnDragListener(new View.OnDragListener() {
+        mPlayCard.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View view, DragEvent dragEvent) {
                 if (dragEvent.getAction() == DragEvent.ACTION_DRAG_STARTED) {
@@ -196,6 +216,12 @@ public class GameFragment extends RoboFragment {
                     final int index = Integer.parseInt(indexString.toString());
                     Log.d(TAG, "playing " + index);
                     mHanabiAPI.playCard(mName, mGame.getId(), index);
+                    return true;
+                } else if (dragEvent.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
+                    mPlayCard.setTextColor(getResources().getColor(R.color.pastel_green));
+                    return true;
+                } else if (dragEvent.getAction() == DragEvent.ACTION_DRAG_EXITED) {
+                    mPlayCard.setTextColor(getResources().getColor(R.color.pastel_white));
                     return true;
                 } else if (dragEvent.getAction() == DragEvent.ACTION_DRAG_ENDED) {
                     return true;
@@ -244,6 +270,8 @@ public class GameFragment extends RoboFragment {
     }
 
     private void bindBoard(Game game) {
+        mGameHints.setText(getString(R.string.game_hints, game.getNumHints()));
+        mGameLives.setText(getString(R.string.game_lives, game.getNumLives()));
         mBoard.removeAllViews();
         for (Card card : game.getPlayed()) {
             bindCard(card);
@@ -258,6 +286,7 @@ public class GameFragment extends RoboFragment {
         final int margin = (int) convertDpToPixel(5f);
         llp.setMargins(margin, margin, margin, margin);
         cardView.setLayoutParams(llp);
+        cardView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
         cardView.bindWithCard(card);
         mBoard.addView(cardView);
     }
@@ -290,7 +319,7 @@ public class GameFragment extends RoboFragment {
             if (player.getName().equals(mGame.getCurrentPlayer())) {
                 blinker.setAlpha(0f);
                 blinker.setVisibility(View.VISIBLE);
-                ObjectAnimator animator = ObjectAnimator.ofFloat(blinker, View.ALPHA, 0.05f);
+                ObjectAnimator animator = ObjectAnimator.ofFloat(blinker, View.ALPHA, 0.5f);
                 animator.setRepeatMode(ValueAnimator.REVERSE);
                 animator.setRepeatCount(ValueAnimator.INFINITE);
                 animator.setDuration(400);
@@ -302,7 +331,7 @@ public class GameFragment extends RoboFragment {
             handView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    HintDialogFragment.create(player).show(getFragmentManager(), null);
+                    HintDialogFragment.create(mName, mGame.getId(), player).show(getFragmentManager(), null);
                 }
             });
 

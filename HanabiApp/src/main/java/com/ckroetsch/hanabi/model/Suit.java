@@ -10,7 +10,7 @@ public enum Suit {
     RED(R.color.pastel_red),
     BLUE(R.color.pastel_blue),
     GREEN(R.color.pastel_green),
-    RAINBOW(R.drawable.rainbow),
+    RAINBOW(R.drawable.rainbow2),
     YELLOW(R.color.pastel_yellow);
 
     private int color;

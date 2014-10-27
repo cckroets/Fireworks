@@ -1,6 +1,8 @@
 package com.ckroetsch.hanabi.app.chat;
 
 import android.content.Context;
+import android.text.SpannableString;
+import android.text.style.BackgroundColorSpan;
 
 import com.ckroetsch.hanabi.R;
 import com.ckroetsch.hanabi.events.socket.CardEvent;

@@ -12,6 +12,7 @@ import com.ckroetsch.hanabi.R;
 import com.ckroetsch.hanabi.model.Card;
 import com.ckroetsch.hanabi.model.Player;
 import com.ckroetsch.hanabi.model.Suit;
+import com.ckroetsch.hanabi.network.HanabiFrontEndAPI;
 import com.ckroetsch.hanabi.view.ColorHintView;
 import com.ckroetsch.hanabi.view.FakeListView;
 import com.ckroetsch.hanabi.view.NumberHintView;
@@ -30,11 +31,17 @@ import roboguice.inject.InjectView;
 public class HintDialogFragment extends RoboDialogFragment {
 
     final static String KEY_PLAYER = "player";
+    final static String KEY_NAME = "name";
+    final static String KEY_GAME_ID = "game_id";
     final static Integer[] NUMBERS = new Integer[]{1, 2, 3, 4, 5};
     final static Suit[] SUITS = new Suit[]{Suit.BLUE, Suit.GREEN, Suit.RED, Suit.WHITE, Suit.YELLOW};
     final static float DISABLED_ALPHA = 0.3f;
 
     Player mPlayer;
+
+    String mName;
+
+    int mGameId;
 
     Boolean[] mCardNumbers;
 
@@ -46,15 +53,29 @@ public class HintDialogFragment extends RoboDialogFragment {
     @InjectView(R.id.numberList)
     FakeListView mNumberListView;
 
+    @InjectView(R.id.confirm)
+    View mConfirm;
+
+    @InjectView(R.id.cancel)
+    View mCancel;
+
     @Inject
     LayoutInflater mInflater;
 
+    @Inject
+    HanabiFrontEndAPI mHanabiAPI;
+
     Selectable mSelected;
 
-    public static HintDialogFragment create(Player hintee) {
+    Hint mSelectedHint;
+
+
+    public static HintDialogFragment create(String name, int gameId, Player hintee) {
         final HintDialogFragment fragment = new HintDialogFragment();
         final Bundle args = new Bundle();
         args.putParcelable(KEY_PLAYER, hintee);
+        args.putString(KEY_NAME, name);
+        args.putInt(KEY_GAME_ID, gameId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,6 +84,8 @@ public class HintDialogFragment extends RoboDialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPlayer = getArguments().getParcelable(KEY_PLAYER);
+        mName = getArguments().getString(KEY_NAME);
+        mGameId = getArguments().getInt(KEY_GAME_ID);
         mSuitSet = new HashSet<Suit>();
         mCardNumbers = new Boolean[mPlayer.getHand().size()];
         for (int i = 0; i < mCardNumbers.length; i++) {
@@ -94,6 +117,29 @@ public class HintDialogFragment extends RoboDialogFragment {
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         mColorListView.setAdapter(new SuitAdapter(getActivity()));
         mNumberListView.setAdapter(new NumberAdapter(getActivity()));
+        mConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onConfirm();
+            }
+        });
+        mCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onCancel();
+            }
+        });
+    }
+
+    private void onConfirm() {
+        if (mSelectedHint != null) {
+            mSelectedHint.giveHint();
+        }
+        getDialog().dismiss();
+    }
+
+    private void onCancel() {
+        getDialog().cancel();
     }
 
     private void setEnabledView(View view, boolean enabled) {
@@ -136,11 +182,6 @@ public class HintDialogFragment extends RoboDialogFragment {
         @Override
         public Selectable getSelectable(View view) {
             return (Selectable) view;
-        }
-
-        @Override
-        protected void onItemSelected(View view, Hint hint) {
-            super.onItemSelected(view, hint);
         }
 
         @Override
@@ -210,7 +251,7 @@ public class HintDialogFragment extends RoboDialogFragment {
 
         protected void onItemSelected(View view, Hint hint) {
             onViewSelected((Selectable)view);
-            hint.giveHint();
+            mSelectedHint = hint;
         }
 
         @Override
@@ -239,7 +280,7 @@ public class HintDialogFragment extends RoboDialogFragment {
 
         @Override
         public void giveHint() {
-            Toast.makeText(getActivity(), "Number hint: " + mNumber, Toast.LENGTH_SHORT).show();
+            mHanabiAPI.giveNumberHint(mName, mGameId,  mNumber, mPlayer.getName());
         }
     }
 
@@ -253,7 +294,7 @@ public class HintDialogFragment extends RoboDialogFragment {
 
         @Override
         public void giveHint() {
-            Toast.makeText(getActivity(), "Color hint: " + mSuit.name(), Toast.LENGTH_SHORT).show();
+            mHanabiAPI.giveColorHint(mName, mGameId, mSuit, mPlayer.getName());
         }
     }
 }

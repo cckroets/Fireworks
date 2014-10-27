@@ -2,6 +2,8 @@ package com.ckroetsch.hanabi.events.socket;
 
 import com.ckroetsch.hanabi.model.Game;
 
+import java.util.List;
+
 /**
  * @author curtiskroetsch
  */
@@ -11,8 +13,8 @@ public class GiveHintEvent {
 
     public Game game;
     public String hintType;
-    public String name;
-    public String toName;
+    public String from;
+    public String to;
     public String hint;
-    public String cardsHinted;
+    public List<Integer> cardsHinted;
 }

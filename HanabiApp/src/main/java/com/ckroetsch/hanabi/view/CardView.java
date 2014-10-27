@@ -36,6 +36,6 @@ public class CardView extends TextView {
 
     public void bindWithUnknown() {
         setText(null);
-        setBackgroundResource(R.drawable.carbon);
+        setBackgroundResource(R.color.table_center);
     }
 }

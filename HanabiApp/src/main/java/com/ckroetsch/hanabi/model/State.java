@@ -22,7 +22,7 @@ public final class State {
     @JsonProperty("red")
     int mRed;
 
-    @JsonProperty("rainbow")
+    @JsonProperty("rainbow2")
     int mRainbow;
 
     private State() {

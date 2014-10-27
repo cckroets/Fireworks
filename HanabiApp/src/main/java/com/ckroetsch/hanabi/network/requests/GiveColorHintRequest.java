@@ -16,7 +16,7 @@ public class GiveColorHintRequest {
     @JsonProperty("name")
     String mHinter;
 
-    @JsonProperty("toName")
+    @JsonProperty("to")
     String mHintee;
 
     @JsonProperty("hintType")
