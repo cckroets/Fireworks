@@ -1,4 +1,4 @@
-package com.ckroetsch.hanabi.events.socket;
+package com.ckroetsch.hanabi.events.socket.common;
 
 import com.ckroetsch.hanabi.network.HanabiError;
 

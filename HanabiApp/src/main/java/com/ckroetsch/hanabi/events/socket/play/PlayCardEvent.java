@@ -1,6 +1,4 @@
-package com.ckroetsch.hanabi.events.socket;
-
-import com.ckroetsch.hanabi.model.Game;
+package com.ckroetsch.hanabi.events.socket.play;
 
 /**
  * @author curtiskroetsch

@@ -1,4 +1,4 @@
-package com.ckroetsch.hanabi.events.socket;
+package com.ckroetsch.hanabi.events.socket.play;
 
 import com.ckroetsch.hanabi.model.Game;
 

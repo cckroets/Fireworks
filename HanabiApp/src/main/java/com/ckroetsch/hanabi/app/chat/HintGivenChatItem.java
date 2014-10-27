@@ -3,7 +3,7 @@ package com.ckroetsch.hanabi.app.chat;
 import android.content.Context;
 
 import com.ckroetsch.hanabi.R;
-import com.ckroetsch.hanabi.events.socket.GiveHintEvent;
+import com.ckroetsch.hanabi.events.socket.play.GiveHintEvent;
 
 /**
 * @author curtiskroetsch

@@ -3,13 +3,65 @@
 <com.ckroetsch.hanabi.view.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/table_center"
-    android:fontFamily="sans-serif-light"
-    android:gravity="center"
-    android:textColor="@android:color/black"
-    android:textSize="24pt"
-    tools:textColor="@color/white"
-    tools:background="@color/table_center"
-    tools:text="3"/>
+    android:layout_width="48dp"
+    android:layout_height="64dp">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:background="@color/table_center"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom"
+        android:layout_height="5dp">
+
+        <View
+            android:tag="BLUE"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/pastel_blue"/>
+
+        <View
+            android:tag="RED"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/pastel_red"/>
+
+        <View
+            android:tag="YELLOW"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/pastel_yellow"/>
+
+        <View
+            android:tag="WHITE"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/pastel_white"/>
+
+        <View
+            android:tag="GREEN"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/pastel_green"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="24pt"
+        tools:textColor="@color/white"
+        tools:text="?"/>
+
+</com.ckroetsch.hanabi.view.CardView>

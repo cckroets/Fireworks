@@ -6,7 +6,7 @@ import android.util.Log;
 
 
 import com.ckroetsch.hanabi.events.BusSingleton;
-import com.ckroetsch.hanabi.events.socket.HanabiErrorEvent;
+import com.ckroetsch.hanabi.events.socket.common.HanabiErrorEvent;
 import com.ckroetsch.hanabi.events.socket.SocketEvent;
 import com.ckroetsch.hanabi.util.JsonUtil;
 import com.google.inject.Inject;
@@ -15,11 +15,9 @@ import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.socketio.Acknowledge;
 import com.koushikdutta.async.http.socketio.ConnectCallback;
 import com.koushikdutta.async.http.socketio.DisconnectCallback;
-import com.koushikdutta.async.http.socketio.EventCallback;
 import com.koushikdutta.async.http.socketio.ExceptionCallback;
 import com.koushikdutta.async.http.socketio.JSONCallback;
 import com.koushikdutta.async.http.socketio.SocketIOClient;
-import com.koushikdutta.async.http.socketio.StringCallback;
 import com.squareup.otto.Bus;
 import org.json.JSONArray;
 import org.json.JSONObject;

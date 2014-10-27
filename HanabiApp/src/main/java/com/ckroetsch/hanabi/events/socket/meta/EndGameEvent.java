@@ -1,11 +1,10 @@
-package com.ckroetsch.hanabi.events.socket;
+package com.ckroetsch.hanabi.events.socket.meta;
 
 import com.ckroetsch.hanabi.model.Game;
 
 /**
  * @author curtiskroetsch
  */
-public class JoinGameEvent {
+public class EndGameEvent {
     public String name;
-    public Game game;
 }

@@ -20,4 +20,5 @@
     <string name="start_resume_game">Resume Game</string>
     <string name="game_hints">Hints: %d</string>
     <string name="game_lives">Lives: %d</string>
+    <string name="unkown_card">?</string>
 </resources>

@@ -1,14 +1,11 @@
 package com.ckroetsch.hanabi.app;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.ClipData;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.SpannableString;
-import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.DragEvent;
@@ -25,12 +22,12 @@ import android.widget.Toast;
 
 import com.ckroetsch.hanabi.R;
 import com.ckroetsch.hanabi.events.BusSingleton;
-import com.ckroetsch.hanabi.events.socket.DiscardEvent;
-import com.ckroetsch.hanabi.events.socket.HanabiErrorEvent;
-import com.ckroetsch.hanabi.events.socket.JoinGameEvent;
-import com.ckroetsch.hanabi.events.socket.PlayCardEvent;
+import com.ckroetsch.hanabi.events.socket.play.DiscardEvent;
+import com.ckroetsch.hanabi.events.socket.common.HanabiErrorEvent;
+import com.ckroetsch.hanabi.events.socket.meta.JoinGameEvent;
+import com.ckroetsch.hanabi.events.socket.play.PlayCardEvent;
 import com.ckroetsch.hanabi.events.socket.SocketEvent;
-import com.ckroetsch.hanabi.events.socket.StartGameEvent;
+import com.ckroetsch.hanabi.events.socket.play.StartGameEvent;
 import com.ckroetsch.hanabi.model.Card;
 import com.ckroetsch.hanabi.model.Game;
 import com.ckroetsch.hanabi.model.Player;

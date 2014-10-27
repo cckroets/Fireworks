@@ -1,5 +1,15 @@
 package com.ckroetsch.hanabi.events.socket;
 
+import com.ckroetsch.hanabi.events.socket.meta.EnterGameEvent;
+import com.ckroetsch.hanabi.events.socket.meta.JoinGameEvent;
+import com.ckroetsch.hanabi.events.socket.meta.ResumeGameEvent;
+import com.ckroetsch.hanabi.events.socket.common.SendMessageEvent;
+import com.ckroetsch.hanabi.events.socket.play.DiscardEvent;
+import com.ckroetsch.hanabi.events.socket.meta.EndGameEvent;
+import com.ckroetsch.hanabi.events.socket.play.GiveHintEvent;
+import com.ckroetsch.hanabi.events.socket.play.PlayCardEvent;
+import com.ckroetsch.hanabi.events.socket.play.StartGameEvent;
+
 import org.json.JSONObject;
 
 import java.util.HashMap;

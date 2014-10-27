@@ -13,13 +13,12 @@ import android.widget.Toast;
 
 import com.ckroetsch.hanabi.R;
 import com.ckroetsch.hanabi.events.BusSingleton;
-import com.ckroetsch.hanabi.events.socket.EnterGameEvent;
-import com.ckroetsch.hanabi.events.socket.HanabiErrorEvent;
-import com.ckroetsch.hanabi.events.socket.ResumeGameEvent;
+import com.ckroetsch.hanabi.events.socket.meta.EnterGameEvent;
+import com.ckroetsch.hanabi.events.socket.common.HanabiErrorEvent;
+import com.ckroetsch.hanabi.events.socket.meta.ResumeGameEvent;
 import com.ckroetsch.hanabi.events.socket.SocketEvent;
 import com.ckroetsch.hanabi.network.HanabiError;
 import com.ckroetsch.hanabi.network.HanabiFrontEndAPI;
-import com.ckroetsch.hanabi.network.HanabiSocketIO;
 import com.google.inject.Inject;
 import com.squareup.otto.Subscribe;
 
