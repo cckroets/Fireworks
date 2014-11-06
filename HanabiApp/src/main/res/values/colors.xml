@@ -21,6 +21,7 @@
 
     <color name="black">@android:color/black</color>
     <color name="grey">@android:color/darker_gray</color>
+    <color name="pressed">#28000000</color>
 
     <color name="table_start">#ff373737</color>
     <color name="table_center">#ff4b4b4b</color>

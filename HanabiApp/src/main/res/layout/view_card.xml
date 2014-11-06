@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:layout_width="48dp"
-    tools:layout_height="64dp">
+    tools:layout_width="36dp"
+    tools:layout_height="48dp">
 
     <TextView
         android:id="@+id/card_number"
@@ -15,9 +15,9 @@
         android:fontFamily="sans-serif-light"
         android:gravity="center"
         android:textColor="@android:color/black"
-        android:textSize="48sp"
+        android:textSize="36sp"
         android:background="@color/unknown_card"
-        tools:textColor="@color/white"
+        tools:textColor="@color/pastel_white"
         tools:text="@string/unknown_card"/>
 
     <LinearLayout

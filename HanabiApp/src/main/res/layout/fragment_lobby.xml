@@ -1,20 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
               android:layout_width="match_parent"
+              android:layout_height="match_parent"
               android:background="@drawable/table"
-              android:layout_height="match_parent">
+              android:orientation="vertical">
 
-<include layout="@layout/view_game_preview" />
-<include layout="@layout/view_game_preview" />
-<include layout="@layout/view_game_preview" />
-<include layout="@layout/view_game_preview" />
-<include layout="@layout/view_game_preview" />
-<include layout="@layout/view_game_preview" />
-<include layout="@layout/view_game_preview" />
-<include layout="@layout/view_game_preview" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:paddingLeft="10dp">
 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center_vertical"
+            android:text="Hanabi"
+            android:textColor="@color/pastel_white"
+            android:textSize="28sp"/>
 
+        <ImageButton
+            android:id="@+id/lobby_refresh"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:contentDescription="Refresh Games"
+            android:background="@drawable/tappable"
+            android:src="@drawable/ic_refresh"/>
+
+        <ImageButton
+            android:id="@+id/lobby_enter"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:contentDescription="Enter Game"
+            android:background="@drawable/tappable"
+            android:src="@drawable/ic_join"/>
+
+        <ImageButton
+            android:id="@+id/lobby_create"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:contentDescription="Create Game"
+            android:background="@drawable/tappable"
+            android:src="@drawable/ic_new"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:alpha="0.2"
+        android:background="@color/grey" />
+
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:fontFamily="sans-serif"
+            android:gravity="center_vertical"
+            android:text="Open Games"
+            android:textColor="@color/grey"
+            android:textSize="14sp"
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <include layout="@layout/view_game_preview"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@android:color/transparent"/>
+
+        <include layout="@layout/view_game_preview"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@android:color/transparent"/>
+
+        <include layout="@layout/view_game_preview"/>
+
+        <TextView
+            android:layout_marginTop="5dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center_vertical"
+            android:text="Your Games"
+            android:textColor="@color/grey"
+            android:textSize="14sp"
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@android:color/transparent"/>
+
+        <include layout="@layout/view_game_preview"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@android:color/transparent"/>
+
+        <include layout="@layout/view_game_preview"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@android:color/transparent"/>
+
+        <include layout="@layout/view_game_preview"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@android:color/transparent"/>
+
+        <include layout="@layout/view_game_preview"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@android:color/transparent"/>
+
+        <include layout="@layout/view_game_preview"/>
+
+    </LinearLayout>
 
 </LinearLayout>

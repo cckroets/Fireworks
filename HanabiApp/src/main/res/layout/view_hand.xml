@@ -3,87 +3,132 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:background="@drawable/table"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:background="@drawable/table">
 
     <LinearLayout
+        android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/hand_name_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/hand_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="1dp"
-                android:drawablePadding="10dp"
-                android:drawableRight="@android:drawable/star_off"
+                android:layout_weight="1"
                 android:fontFamily="sans-serif-light"
-                android:gravity="left"
+                android:gravity="left|center_vertical"
                 android:text="Curtis"
                 android:textColor="@android:color/white"
-                android:textSize="12pt"/>
-
-        </LinearLayout>
-
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                android:textSize="20sp"/>
 
             <LinearLayout
-                android:id="@+id/hand_container"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/tappable"
                 android:orientation="horizontal">
 
-                <include
-                    layout="@layout/view_card"
-                    android:layout_width="48dp"
-                    android:layout_height="64dp"
-                    android:layout_margin="5dp"/>
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_hints"/>
 
-                <include
-                    layout="@layout/view_card"
-                    android:layout_width="48dp"
-                    android:layout_height="64dp"
-                    android:layout_margin="5dp"/>
-
-                <include
-                    layout="@layout/view_card"
-                    android:layout_width="48dp"
-                    android:layout_height="64dp"
-                    android:layout_margin="5dp"/>
-
-                <include
-                    layout="@layout/view_card"
-                    android:layout_width="48dp"
-                    android:layout_height="64dp"
-                    android:layout_margin="5dp"/>
-
-                <include
-                    layout="@layout/view_card"
-                    android:layout_width="48dp"
-                    android:layout_height="64dp"
-                    android:layout_margin="5dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center_vertical"
+                    android:text="HINT"
+                    android:textColor="@color/pastel_blue"
+                    android:textSize="10sp"/>
 
             </LinearLayout>
 
-        </HorizontalScrollView>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/tappable"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_see_hints"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center_vertical"
+                    android:text="VIEW"
+                    android:textColor="@color/pastel_blue"
+                    android:textSize="10sp"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/hand_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <include
+                layout="@layout/view_card"
+                android:layout_width="36dp"
+                android:layout_height="48dp"
+                android:layout_margin="5dp"/>
+
+            <include
+                layout="@layout/view_card"
+                android:layout_width="36dp"
+                android:layout_height="48dp"
+                android:layout_margin="5dp"/>
+
+            <include
+                layout="@layout/view_card"
+                android:layout_width="36dp"
+                android:layout_height="48dp"
+                android:layout_margin="5dp"/>
+
+            <include
+                layout="@layout/view_card"
+                android:layout_width="36dp"
+                android:layout_height="48dp"
+                android:layout_margin="5dp"/>
+
+            <include
+                layout="@layout/view_card"
+                android:layout_width="36dp"
+                android:layout_height="48dp"
+                android:layout_margin="5dp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <View
+
+    <ImageView
         android:id="@+id/blinker"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:alpha="0"
-        android:background="@color/pastel_white"
+        android:src="@color/pastel_white"
         android:visibility="visible"/>
+
 </FrameLayout>
