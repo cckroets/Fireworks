@@ -1,13 +1,13 @@
 package com.ckroetsch.hanabi.network;
 
 import com.ckroetsch.hanabi.events.socket.SocketEvent;
-import com.ckroetsch.hanabi.network.requests.CardRequest;
-import com.ckroetsch.hanabi.network.requests.CreateGameRequest;
+import com.ckroetsch.hanabi.model.requests.CardRequest;
+import com.ckroetsch.hanabi.model.requests.CreateGameRequest;
 import com.ckroetsch.hanabi.model.Suit;
-import com.ckroetsch.hanabi.network.requests.GameIdAndNameRequest;
-import com.ckroetsch.hanabi.network.requests.GiveColorHintRequest;
-import com.ckroetsch.hanabi.network.requests.GiveNumberHintRequest;
-import com.ckroetsch.hanabi.network.requests.SendMessageRequest;
+import com.ckroetsch.hanabi.model.requests.GameIdAndNameRequest;
+import com.ckroetsch.hanabi.model.requests.GiveColorHintRequest;
+import com.ckroetsch.hanabi.model.requests.GiveNumberHintRequest;
+import com.ckroetsch.hanabi.model.requests.SendMessageRequest;
 import com.google.inject.Inject;
 
 /**

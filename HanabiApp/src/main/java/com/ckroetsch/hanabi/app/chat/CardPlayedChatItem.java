@@ -1,6 +1,7 @@
 package com.ckroetsch.hanabi.app.chat;
 
 import android.content.Context;
+import android.view.View;
 
 import com.ckroetsch.hanabi.R;
 import com.ckroetsch.hanabi.events.socket.play.CardEvent;
@@ -34,7 +35,9 @@ public class CardPlayedChatItem extends GameChatItem {
         } else {
             stringResId = R.string.chat_game_played_success;
         }
-        viewHolder.mMessage.setText(mContext.getResources().getString(stringResId, mEvent.name));
+        viewHolder.mMessage.setText(mContext.getResources().getString(stringResId));
+        viewHolder.mCard.setVisibility(View.VISIBLE);
+        viewHolder.mCard.bindWithCard(mEvent.card);
     }
 
     @Override

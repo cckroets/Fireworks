@@ -90,6 +90,7 @@
         android:layout_marginTop="4dp"
         android:fontFamily="sans-serif-light"
         android:text=" "
+        android:visibility="visible"
         tools:text="Join the game to play"
         android:textColor="@android:color/white"/>
 

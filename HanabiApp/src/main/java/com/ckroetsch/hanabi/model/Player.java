@@ -51,4 +51,16 @@ public final class Player implements Parcelable {
         parcel.writeString(name);
         parcel.writeList(hand);
     }
+
+    public static final Creator<Player> CREATOR = new Creator<Player>() {
+        @Override
+        public Player createFromParcel(Parcel parcel) {
+            return new Player(parcel);
+        }
+
+        @Override
+        public Player[] newArray(int i) {
+            return new Player[i];
+        }
+    };
 }

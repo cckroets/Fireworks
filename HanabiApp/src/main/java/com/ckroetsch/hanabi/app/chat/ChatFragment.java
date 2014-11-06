@@ -19,7 +19,7 @@ import com.ckroetsch.hanabi.events.socket.play.GiveHintEvent;
 import com.ckroetsch.hanabi.events.socket.play.PlayCardEvent;
 import com.ckroetsch.hanabi.events.socket.common.SendMessageEvent;
 import com.ckroetsch.hanabi.model.Game;
-import com.ckroetsch.hanabi.model.Message;
+import com.ckroetsch.hanabi.model.requests.Message;
 import com.ckroetsch.hanabi.model.Spectator;
 import com.ckroetsch.hanabi.network.HanabiFrontEndAPI;
 import com.ckroetsch.hanabi.util.JsonUtil;

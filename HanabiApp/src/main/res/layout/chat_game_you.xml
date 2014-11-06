@@ -53,23 +53,19 @@
         android:maxWidth="250dp"
         android:paddingBottom="5dp"
         android:paddingLeft="10dp"
-        android:paddingRight="5dp"
         android:paddingTop="5dp"
-        android:text="Lost a life by misplaying: "
+        android:text="@string/chat_game_played_success"
         android:textColor="@color/pastel_white"
         android:textSize="14sp"/>
 
-    <com.ckroetsch.hanabi.view.CardView
-        android:id="@+id/chat_game_card"
-        android:layout_width="21dp"
-        android:layout_height="28dp"
-        android:layout_gravity="center_vertical"
-        android:background="@drawable/carbon"
-        android:fontFamily="sans-serif-light"
-        android:gravity="center"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
+    <FrameLayout
+        android:id="@+id/card_holder"
+        tools:layout_width="21"
+        tools:layout_height="28"
         tools:background="@color/pastel_yellow"
-        tools:text="3"/>
+        android:layout_margin="5dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

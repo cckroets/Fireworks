@@ -26,6 +26,8 @@
     <color name="table_center">#ff4b4b4b</color>
     <color name="table_end">#ff252525</color>
 
+    <color name="unknown_card">#ff7b7b7b</color>
+
     <color name="chat_spectator">#C2C2C2</color>
     <array name="chat_players">
         <item>@color/pastel_violet</item>

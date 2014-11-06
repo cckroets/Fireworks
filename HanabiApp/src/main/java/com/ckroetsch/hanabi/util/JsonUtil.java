@@ -60,13 +60,11 @@ public final class JsonUtil {
         return null;
     }
 
+    public static String objectToJsonString(Object object) {
+        return new Gson().toJson(object);
+    }
+
     public static <T> T jsonToObject(String json, Class<T> klass) {
-        final ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.readValue(json, klass);
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-        }
-        return null;
+        return new Gson().fromJson(json, klass);
     }
 }

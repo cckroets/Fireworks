@@ -3,13 +3,9 @@ package com.ckroetsch.hanabi.app;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 
 import com.ckroetsch.hanabi.R;
 import com.ckroetsch.hanabi.model.Game;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.IOException;
 
 import roboguice.activity.RoboFragmentActivity;
 

@@ -2,8 +2,10 @@ package com.ckroetsch.hanabi.app;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -22,12 +24,15 @@ import android.widget.Toast;
 
 import com.ckroetsch.hanabi.R;
 import com.ckroetsch.hanabi.events.BusSingleton;
+import com.ckroetsch.hanabi.events.socket.meta.EndGameEvent;
 import com.ckroetsch.hanabi.events.socket.play.DiscardEvent;
 import com.ckroetsch.hanabi.events.socket.common.HanabiErrorEvent;
 import com.ckroetsch.hanabi.events.socket.meta.JoinGameEvent;
+import com.ckroetsch.hanabi.events.socket.play.GiveHintEvent;
 import com.ckroetsch.hanabi.events.socket.play.PlayCardEvent;
 import com.ckroetsch.hanabi.events.socket.SocketEvent;
 import com.ckroetsch.hanabi.events.socket.play.StartGameEvent;
+import com.ckroetsch.hanabi.game.GameContext;
 import com.ckroetsch.hanabi.model.Card;
 import com.ckroetsch.hanabi.model.Game;
 import com.ckroetsch.hanabi.model.Player;
@@ -38,6 +43,10 @@ import com.ckroetsch.hanabi.view.CardView;
 import com.google.inject.Inject;
 import com.squareup.otto.Subscribe;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import roboguice.fragment.RoboFragment;
@@ -83,6 +92,15 @@ public class GameFragment extends RoboFragment {
     @InjectView(R.id.game_lives)
     TextView mGameLives;
 
+    @InjectView(R.id.game_cards_left)
+    TextView mGameCardsLeft;
+
+    @InjectView(R.id.game_score)
+    TextView mGameScore;
+
+    @InjectView(R.id.game_status)
+    TextView mGameStatus;
+
     @Inject
     LayoutInflater mInflater;
 
@@ -103,7 +121,6 @@ public class GameFragment extends RoboFragment {
         mName = getArguments().getString(KEY_NAME);
         Log.d(TAG, "gameJSON = " + gameJSON);
         final Game game = JsonUtil.jsonToObject(gameJSON, Game.class);
-        Log.d(TAG, "gameJSON = " + game);
         mGame = game;
         mHandler.post(new Runnable() {
             @Override
@@ -156,12 +173,35 @@ public class GameFragment extends RoboFragment {
         bindGame(mGame);
     }
 
+    @Subscribe
+    public void onHintGiven(GiveHintEvent event) {
+        Log.d(TAG, "hint given ");
+        if (event.to.equals(mName)) {
+            new AlertDialog.Builder(getActivity())
+                    .setTitle(event.from + " Gave you a " + event.hintType + " hint!")
+                    .setMessage("Cards " + Arrays.toString(event.cardsHinted.toArray()) + " are " + event.hint)
+                    .create().show();
+        }
+        mGame = event.game;
+        bindGame(mGame);
+    }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (mGame.getHasStarted()) {
             mJoinButton.setVisibility(View.GONE);
             mStartButton.setVisibility(View.GONE);
+        } else {
+            mBoardContainer.setVisibility(View.GONE);
+            mJoinButton.setVisibility(View.VISIBLE);
+            for (Player player : mGame.getPlayers()) {
+                if (player.getName().equals(mName)) {
+                    mJoinButton.setVisibility(View.GONE);
+                    mStartButton.setVisibility(View.VISIBLE);
+                    break;
+                }
+            }
         }
         mJoinButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -262,13 +302,54 @@ public class GameFragment extends RoboFragment {
 
     private void bindGame(Game game) {
         bindBoard(game);
+        bindStatus(game);
         Log.d(TAG, "mPlayers: " + mPlayers);
         mPlayers.setAdapter(new PlayersAdapter(getActivity(), game.getPlayers()));
+        if (game.getHasEnded()) {
+            bindGameOver(game);
+        }
+    }
+
+    private void bindStatus(Game game) {
+        if (game.getHasEnded()) {
+            mGameStatus.setText("Game has finished, play again?");
+        } else if (!game.getHasStarted()) {
+            boolean mInGame = false;
+            for (Player player : game.getPlayers()) {
+                if (player.getName().equals(mName)) {
+                    mInGame = true;
+                    break;
+                }
+            }
+            if (mInGame) {
+                mGameStatus.setText("Start the game once your friends have all joined");
+            } else {
+                mGameStatus.setText("Join the game to play");
+            }
+        } else if (game.getCurrentPlayer().equals(mName)) {
+            mGameStatus.setText("It's your turn to play");
+        } else {
+            mGameStatus.setText(String.format("It's %s's turn to play", game.getCurrentPlayer()));
+        }
+    }
+
+    private void bindGameOver(Game game) {
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Game Over")
+                .setMessage("Final score: " + game.getScore())
+                .setPositiveButton("Play again?", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ((MainActivity) getActivity()).openStartFragment();
+                    }
+                }).create().show();
     }
 
     private void bindBoard(Game game) {
-        mGameHints.setText(getString(R.string.game_hints, game.getNumHints()));
-        mGameLives.setText(getString(R.string.game_lives, game.getNumLives()));
+        mGameHints.setText(Integer.toString(game.getNumHints()));
+        mGameLives.setText(Integer.toString(game.getNumLives()));
+        mGameScore.setText(Integer.toString(game.getScore()));
+        mGameCardsLeft.setText(Integer.toString(game.getNumCardsRemaining()));
         mBoard.removeAllViews();
         for (Card card : game.getPlayed()) {
             bindCard(card);
@@ -276,20 +357,9 @@ public class GameFragment extends RoboFragment {
     }
 
     private void bindCard(Card card) {
-        final CardView cardView = (CardView) mInflater.inflate(R.layout.view_card, mBoard, false);
-        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        llp.width = (int) convertDpToPixel(30f);
-        llp.height = (int) convertDpToPixel(40f);
-        final int margin = (int) convertDpToPixel(5f);
-        llp.setMargins(margin, margin, margin, margin);
-        cardView.setLayoutParams(llp);
-        cardView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
+        final CardView cardView = CardView.createCard(getActivity(), mInflater, mBoard, CardView.Size.MEDIUM);
         cardView.bindWithCard(card);
         mBoard.addView(cardView);
-    }
-
-    public float convertDpToPixel(float dp) {
-        return dp * getActivity().getResources().getDisplayMetrics().density;
     }
 
     class PlayersAdapter extends ArrayAdapter<Player> {
@@ -335,16 +405,9 @@ public class GameFragment extends RoboFragment {
             int index = 0;
             for (final Card card : player.getHand()) {
                 final int cardIndex = index;
-                final CardView cardView = (CardView) mInflater.inflate(R.layout.view_card, cardContainer, false);
-                LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                llp.width = (int) convertDpToPixel(48f);
-                llp.height = (int) convertDpToPixel(64f);
-                final int margin = (int) convertDpToPixel(5f);
-                llp.setMargins(margin, margin, margin, margin);
-                cardView.setLayoutParams(llp);
+                final CardView cardView = CardView.createCard(getActivity(), mInflater, cardContainer, CardView.Size.LARGE);
                 if (isMe) {
-                    cardView.bindWithCard(card);
-                    //cardView.bindWithUnknown();
+                    cardView.bindWithUnknown(card);
                 } else {
                     cardView.bindWithCard(card);
                 }

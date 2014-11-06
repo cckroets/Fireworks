@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,8 @@ import roboguice.inject.InjectView;
  */
 public class TabbedHanabiFragment extends RoboFragment {
 
+    private static final String TAG = TabbedHanabiFragment.class.getName();
+
     public static final String KEY_GAME_ID = "game_id";
     public static final String KEY_GAME = "game";
     public static final String KEY_NAME = "name";
@@ -38,9 +41,10 @@ public class TabbedHanabiFragment extends RoboFragment {
 
     public static TabbedHanabiFragment createInstance(Game game, String name) {
         final TabbedHanabiFragment fragment = new TabbedHanabiFragment();
-        final JSONObject gameJSON = JsonUtil.objectToJson(game);
+        final String gameJSON = JsonUtil.objectToJsonString(game);
+        Log.d(TAG, "gameJSON = " + gameJSON);
         final Bundle args = new Bundle();
-        args.putString(KEY_GAME, gameJSON.toString());
+        args.putString(KEY_GAME, gameJSON);
         args.putString(KEY_NAME, name);
         args.putInt(KEY_GAME_ID, game.getId());
         fragment.setArguments(args);
@@ -60,7 +64,8 @@ public class TabbedHanabiFragment extends RoboFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mViewPager.setAdapter(new HanabiViewPagerAdapter(getFragmentManager()));
+        mViewPager.setAdapter(new HanabiViewPagerAdapter(getChildFragmentManager()));
+        mViewPager.setOffscreenPageLimit(2);
         mTabStrip.setViewPager(mViewPager);
     }
 

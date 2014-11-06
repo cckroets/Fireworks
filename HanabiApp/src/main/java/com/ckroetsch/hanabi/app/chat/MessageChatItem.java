@@ -2,14 +2,13 @@ package com.ckroetsch.hanabi.app.chat;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ckroetsch.hanabi.R;
-import com.ckroetsch.hanabi.model.Message;
+import com.ckroetsch.hanabi.model.requests.Message;
 import com.google.inject.Inject;
 
 import roboguice.RoboGuice;

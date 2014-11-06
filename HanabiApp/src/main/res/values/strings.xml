@@ -8,9 +8,8 @@
     <string name="tab_title_chat">Chat</string>
     <string name="tab_title_history">History</string>
 
-
-    <string name="chat_game_discard">Discarded a %d</string>
-    <string name="chat_game_played_success">Played a %d</string>
+    <string name="chat_game_discard">Discarded a </string>
+    <string name="chat_game_played_success">Played a </string>
     <string name="chat_game_played_fail">lost a life for misplaying: </string>
 
     <string name="chat_game_hint_number">hinted to %1$s about the number %2$s</string>
@@ -18,7 +17,9 @@
     <string name="start_create_game">Create Game</string>
     <string name="start_enter_game">Enter Game</string>
     <string name="start_resume_game">Resume Game</string>
-    <string name="game_hints">Hints: %d</string>
-    <string name="game_lives">Lives: %d</string>
-    <string name="unkown_card">?</string>
+    <string name="game_hints">%d</string>
+    <string name="game_lives">%d</string>
+    <string name="game_cards">%d</string>
+    <string name="game_score">%d</string>
+    <string name="unknown_card">\?</string>
 </resources>

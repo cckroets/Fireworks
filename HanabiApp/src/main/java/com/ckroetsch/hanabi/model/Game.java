@@ -12,6 +12,7 @@ public final class Game {
     Boolean isRainbow;
     Integer numHints;
     Integer numLives;
+    Integer score;
     List<Player> players;
     List<Spectator> spectators;
     List<Card> played;
@@ -69,5 +70,9 @@ public final class Game {
 
     public boolean getHasStarted() {
         return hasStarted;
+    }
+
+    public int getScore() {
+        return score;
     }
 }

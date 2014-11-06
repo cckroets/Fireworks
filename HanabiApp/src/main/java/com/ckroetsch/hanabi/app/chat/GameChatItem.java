@@ -1,9 +1,12 @@
 package com.ckroetsch.hanabi.app.chat;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.ckroetsch.hanabi.R;
@@ -17,10 +20,13 @@ import roboguice.RoboGuice;
 */
 public abstract class GameChatItem implements ChatItem {
 
+    private Activity mContext;
+
     @Inject
     protected LayoutInflater mInflater;
 
     public GameChatItem(Context context) {
+        mContext = (Activity) context;
         RoboGuice.getInjector(context).injectMembersWithoutViews(this);
     }
 
@@ -34,7 +40,9 @@ public abstract class GameChatItem implements ChatItem {
             view = mInflater.inflate(type == ChatFragment.GAME_ME ? R.layout.chat_game_mine : R.layout.chat_game_you, parent, false);
             viewHolder.mName = (TextView) view.findViewById(R.id.chat_initials);
             viewHolder.mMessage = (TextView) view.findViewById(R.id.chat_message);
-            viewHolder.mCard = (CardView) view.findViewById(R.id.chat_game_card);
+            FrameLayout cardHolder = (FrameLayout) view.findViewById(R.id.card_holder);
+            viewHolder.mCard = CardView.createCard(mContext, mInflater, cardHolder, CardView.Size.SMALL);
+            cardHolder.addView(viewHolder.mCard);
             viewHolder.mType = type;
             view.setTag(viewHolder);
         } else {

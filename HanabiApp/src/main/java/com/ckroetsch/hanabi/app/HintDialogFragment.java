@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Toast;
 
 import com.ckroetsch.hanabi.R;
 import com.ckroetsch.hanabi.model.Card;
@@ -87,13 +86,13 @@ public class HintDialogFragment extends RoboDialogFragment {
         mName = getArguments().getString(KEY_NAME);
         mGameId = getArguments().getInt(KEY_GAME_ID);
         mSuitSet = new HashSet<Suit>();
-        mCardNumbers = new Boolean[mPlayer.getHand().size()];
+        mCardNumbers = new Boolean[5];
         for (int i = 0; i < mCardNumbers.length; i++) {
             mCardNumbers[i] = Boolean.FALSE;
         }
 
         for (Card card : mPlayer.getHand()) {
-            mCardNumbers[card.getValue() - 1] = true;
+            mCardNumbers[card.getNumber() - 1] = true;
             mSuitSet.add(card.getSuit());
         }
     }
